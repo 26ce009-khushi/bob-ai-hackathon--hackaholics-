@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About the Problem | ClinicalAI Monitor</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="container-lg">
+    <a href="index.html" class="nav-brand">
+      <div class="brand-icon">⚕</div>
+      <div><strong>ClinicalAI Monitor</strong><span class="sub">IBM BoB Hackathon 2026</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html" class="active">About</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="patient-checker.html">Patient Checker</a></li>
+      <li><a href="site-dashboard.html">Site Risk</a></li>
+      <li><a href="documentation.html">Docs</a></li>
+      <li><a href="dashboard.html" class="nav-cta">Start Monitoring →</a></li>
+    </ul>
+    <button class="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a><span>/</span><span>About the Problem</span>
+    </div>
+    <h1>📋 Understanding Clinical Trial Compliance</h1>
+    <p>Why protocol deviations are a critical challenge — and why AI is the solution.</p>
+  </div>
+</div>
+
+<!-- SECTION 1 — What is a Clinical Trial? -->
+<section class="section-pad" style="background:white">
+  <div class="container">
+    <div class="grid-2" style="align-items:center;gap:3rem">
+      <div>
+        <div class="title-tag">Background</div>
+        <h2>What is a Clinical Trial?</h2>
+        <p style="margin:1rem 0">A <strong>clinical trial</strong> is a research study that tests a new drug, medical device, or treatment on human participants to evaluate its safety and effectiveness. Clinical trials are the gold standard for generating evidence in modern medicine.</p>
+        <p style="margin-bottom:1rem">Each trial follows a <strong>protocol</strong> — a detailed plan defining patient eligibility, dosing schedule, visit windows, lab requirements, and safety monitoring criteria. Every deviation from this protocol must be documented, classified, and reported to regulatory authorities.</p>
+        <div class="alert alert-info">
+          <strong>📌 Global Scale:</strong> Over 400,000 clinical trials are currently registered worldwide, involving millions of patients across 185+ countries.
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div class="card" style="text-align:center;border-top:4px solid #0F62FE">
+          <div style="font-size:2rem;margin-bottom:0.5rem">🔬</div>
+          <h4>Phase I–IV Trials</h4>
+          <p style="font-size:0.85rem">From safety testing to long-term effectiveness studies spanning years</p>
+        </div>
+        <div class="card" style="text-align:center;border-top:4px solid #24A148">
+          <div style="font-size:2rem;margin-bottom:0.5rem">👥</div>
+          <h4>Human Participants</h4>
+          <p style="font-size:0.85rem">Thousands of volunteers across multiple research sites worldwide</p>
+        </div>
+        <div class="card" style="text-align:center;border-top:4px solid #DA1E28">
+          <div style="font-size:2rem;margin-bottom:0.5rem">📜</div>
+          <h4>FDA Regulated</h4>
+          <p style="font-size:0.85rem">Every trial must comply with FDA 21 CFR Part 312 and ICH E6 GCP</p>
+        </div>
+        <div class="card" style="text-align:center;border-top:4px solid #F1C21B">
+          <div style="font-size:2rem;margin-bottom:0.5rem">💊</div>
+          <h4>Strict Protocol</h4>
+          <p style="font-size:0.85rem">Detailed rules for dosing, visits, lab tests, and adverse event reporting</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 2 — Protocol Deviations -->
+<section class="section-pad" style="background:#F4F4F4">
+  <div class="container">
+    <div class="text-center">
+      <div class="title-tag">The Core Problem</div>
+      <h2>What are Protocol Deviations?</h2>
+      <p class="section-sub">Any failure to follow the approved clinical trial protocol constitutes a deviation — and must be documented and reported per ICH E6 GCP guidelines.</p>
+    </div>
+    <div class="grid-3">
+      <div class="feature-card" style="border-top:4px solid #DA1E28">
+        <div class="feature-icon" style="background:#FFF1F1">🚨</div>
+        <h3 style="color:#DA1E28">Major Deviations</h3>
+        <p>Significantly impact patient safety or data integrity. Examples:</p>
+        <ul style="margin-top:0.75rem;padding-left:1.25rem;color:#393939;font-size:0.9rem">
+          <li style="margin-bottom:0.4rem">Wrong dose administered (≥2x or ≤0.5x)</li>
+          <li style="margin-bottom:0.4rem">Patient taking banned co-medication</li>
+          <li style="margin-bottom:0.4rem">Critical lab test not performed</li>
+          <li>Visit more than 14 days late</li>
+        </ul>
+        <div class="alert alert-danger" style="margin-top:1rem">
+          <strong>Must be reported to Sponsor &amp; IRB within 5 business days.</strong>
+        </div>
+      </div>
+      <div class="feature-card" style="border-top:4px solid #F1C21B">
+        <div class="feature-icon" style="background:#FCF4D6">⚠️</div>
+        <h3 style="color:#B45309">Minor Deviations</h3>
+        <p>Limited impact on patient safety but affect data quality. Examples:</p>
+        <ul style="margin-top:0.75rem;padding-left:1.25rem;color:#393939;font-size:0.9rem">
+          <li style="margin-bottom:0.4rem">Visit outside the ±7-day window</li>
+          <li style="margin-bottom:0.4rem">Minor dose variation (&lt;2x threshold)</li>
+          <li style="margin-bottom:0.4rem">Late reporting of adverse event</li>
+          <li>Protocol amendment not followed</li>
+        </ul>
+        <div class="alert alert-warning" style="margin-top:1rem">
+          <strong>Documented and included in monthly deviation log.</strong>
+        </div>
+      </div>
+      <div class="feature-card" style="border-top:4px solid #0F62FE">
+        <div class="feature-icon" style="background:#D0E2FF">📎</div>
+        <h3 style="color:#0F62FE">Administrative Deviations</h3>
+        <p>Paperwork and documentation failures with no direct patient impact. Examples:</p>
+        <ul style="margin-top:0.75rem;padding-left:1.25rem;color:#393939;font-size:0.9rem">
+          <li style="margin-bottom:0.4rem">Missing consent form signature</li>
+          <li style="margin-bottom:0.4rem">Incomplete visit documentation</li>
+          <li style="margin-bottom:0.4rem">Delayed eCRF data entry</li>
+          <li>Incorrect patient identifier used</li>
+        </ul>
+        <div class="alert alert-info" style="margin-top:1rem">
+          <strong>Corrected within 48 hours; logged in site file.</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3 — FDA Audit Problem -->
+<section class="section-pad" style="background:white">
+  <div class="container">
+    <div class="grid-2" style="align-items:center;gap:3rem">
+      <div>
+        <div class="title-tag">The FDA Challenge</div>
+        <h2>The FDA Audit Problem</h2>
+        <p style="margin:1rem 0">Every year, the FDA conducts <strong>bioresearch monitoring (BIMO) inspections</strong> of clinical trial sites. Sites with undetected protocol deviations risk:</p>
+        <div style="display:flex;flex-direction:column;gap:0.75rem;margin-top:1.5rem">
+          <div style="display:flex;align-items:center;gap:1rem;padding:1rem;background:#FFF1F1;border-radius:8px;border-left:4px solid #DA1E28">
+            <span style="font-size:1.5rem">⛔</span>
+            <div><strong style="color:#DA1E28">Clinical Hold</strong><br><span style="font-size:0.87rem;color:#393939">FDA can halt the entire trial if systematic deviations are found</span></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:1rem;padding:1rem;background:#FCF4D6;border-radius:8px;border-left:4px solid #F1C21B">
+            <span style="font-size:1.5rem">💰</span>
+            <div><strong style="color:#B45309">Financial Penalties</strong><br><span style="font-size:0.87rem;color:#393939">Fines up to $250,000 per violation under 21 CFR Part 312</span></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:1rem;padding:1rem;background:#FFF1F1;border-radius:8px;border-left:4px solid #DA1E28">
+            <span style="font-size:1.5rem">📉</span>
+            <div><strong style="color:#DA1E28">Data Rejection</strong><br><span style="font-size:0.87sem;color:#393939">FDA may reject all data from a non-compliant site, wasting millions in research</span></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:1rem;padding:1rem;background:#D0E2FF;border-radius:8px;border-left:4px solid #0F62FE">
+            <span style="font-size:1.5rem">🔎</span>
+            <div><strong style="color:#0043CE">Criminal Liability</strong><br><span style="font-size:0.87rem;color:#393939">Principal investigators can face criminal charges for fraudulent data</span></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="border:2px solid #E0E0E0">
+          <h3 style="margin-bottom:1.5rem">📊 Industry Statistics</h3>
+          <div style="display:flex;flex-direction:column;gap:1.25rem">
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:0.4rem">
+                <span style="font-size:0.88rem;font-weight:600">Sites with unreported deviations</span>
+                <span style="font-weight:700;color:#DA1E28">42%</span>
+              </div>
+              <div class="progress-bar-wrap"><div class="progress-bar critical" style="width:42%"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:0.4rem">
+                <span style="font-size:0.88rem;font-weight:600">Trials delayed due to audit findings</span>
+                <span style="font-weight:700;color:#FF832B">28%</span>
+              </div>
+              <div class="progress-bar-wrap"><div class="progress-bar high" style="width:28%"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:0.4rem">
+                <span style="font-size:0.88rem;font-weight:600">Manual review time saved by AI</span>
+                <span style="font-weight:700;color:#24A148">78%</span>
+              </div>
+              <div class="progress-bar-wrap"><div class="progress-bar low" style="width:78%"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:0.4rem">
+                <span style="font-size:0.88rem;font-weight:600">Cost reduction with AI monitoring</span>
+                <span style="font-weight:700;color:#24A148">65%</span>
+              </div>
+              <div class="progress-bar-wrap"><div class="progress-bar low" style="width:65%"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 4 — Why AI -->
+<section class="section-pad" style="background:#F4F4F4">
+  <div class="container">
+    <div class="text-center">
+      <div class="title-tag">The Solution</div>
+      <h2>Why AI is the Answer</h2>
+      <p class="section-sub">Traditional manual monitoring fails at scale. AI changes everything — from reactive auditing to proactive real-time risk prevention.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start">
+      <!-- Old Way -->
+      <div class="card" style="border-top:4px solid #DA1E28">
+        <h3 style="color:#DA1E28;margin-bottom:1.25rem">❌ Traditional Manual Monitoring</h3>
+        <div style="display:flex;flex-direction:column;gap:0.75rem">
+          <div style="display:flex;gap:0.75rem;align-items:flex-start">
+            <span style="color:#DA1E28;font-size:1.1rem;flex-shrink:0">✗</span>
+            <span style="font-size:0.9rem">CRAs manually review thousands of patient records — slow and error-prone</span>
+          </div>
+          <div style="display:flex;gap:0.75rem;align-items:flex-start">
+            <span style="color:#DA1E28;font-size:1.1rem;flex-shrink:0">✗</span>
+            <span style="font-size:0.9rem">Deviations discovered weeks after they occur — too late for intervention</span>
+          </div>
+          <div style="display:flex;gap:0.75rem;align-items:flex-start">
+            <span style="color:#DA1E28;font-size:1.1rem;flex-shrink:0">✗</span>
+            <span style="font-size:0.9rem">Inconsistent classification — same deviation classified differently at different sites</span>
+          </div>
+          <div style="display:flex;gap:0.75rem;align-items:flex-start">
+            <span style="color:#DA1E28;font-size:1.1rem;flex-shrink:0">✗</span>
+            <span style="font-size:0.9rem">CAPA reports take days to prepare — significant regulatory burden</span>
+          </div>
+          <div style="display:flex;gap:0.75rem;align-items:flex-start">
+            <span style="color:#DA1E28;font-size:1.1rem;flex-shrink:0">✗</span>
+            <span style="font-size:0.9rem">No site-level risk visibility — surprises during FDA audit inspections</span>
+          </div>
+        </div>
+      </div>
+      <!-- AI Way -->
+      <div class="card" style="border-top:4px solid #24A148">
+        <h3 style="color:#24A148;margin-bottom:1.25rem">✅ AI-Powered Monitoring (Our Solution)</h3>
+        <div style="display:flex;flex-direction:column;gap:0.75rem">
+          <div style="display:flex;gap:0.75rem;align-items:flex-start">
+            <span style="color:#24A148;font-size:1.1rem;flex-shrink:0">✓</span>
+            <span style="font-size:0.9rem">Real-time automated analysis of all patient records — no manual effort required</span>
+          </div>
+          <div style="display:flex;gap:0.75rem;align-items:flex-start">
+            <span style="color:#24A148;font-size:1.1rem;flex-shrink:0">✓</span>
+            <span style="font-size:0.9rem">Deviations detected instantly — enabling same-day corrective action</span>
+          </div>
+          <div style="display:flex;gap:0.75rem;align-items:flex-start">
+            <span style="color:#24A148;font-size:1.1rem;flex-shrink:0">✓</span>
+            <span style="font-size:0.9rem">Consistent ICH E6 GCP classification — standardized across all sites and monitors</span>
+          </div>
+          <div style="display:flex;gap:0.75rem;align-items:flex-start">
+            <span style="color:#24A148;font-size:1.1rem;flex-shrink:0">✓</span>
+            <span style="font-size:0.9rem">One-click CAPA reports with AI recommendations — ready in seconds</span>
+          </div>
+          <div style="display:flex;gap:0.75rem;align-items:flex-start">
+            <span style="color:#24A148;font-size:1.1rem;flex-shrink:0">✓</span>
+            <span style="font-size:0.9rem">Site risk rankings and trend dashboards — zero surprises at audit time</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:3rem;text-align:center">
+      <a href="patient-checker.html" class="btn btn-blue btn-lg">Try the AI Patient Checker →</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>⚕ ClinicalAI Monitor</h3>
+        <p>IBM BoB AI Innovation Hackathon 2026 — Problem P1: Clinical Trial Risk Monitor.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Pages</h4>
+        <a href="index.html">Home</a><a href="about.html">About</a>
+        <a href="dashboard.html">Dashboard</a><a href="patient-checker.html">Patient Checker</a>
+      </div>
+      <div class="footer-col">
+        <h4>Reports</h4>
+        <a href="risk-analysis.html">Risk Analysis</a><a href="capa-report.html">CAPA Report</a>
+        <a href="site-dashboard.html">Site Risk</a><a href="documentation.html">Documentation</a>
+      </div>
+      <div class="footer-col">
+        <h4>Hackathon</h4>
+        <a href="#">IBM BoB Platform</a><a href="#">Problem P1 Brief</a>
+        <a href="documentation.html">Architecture</a><a href="documentation.html">Team Info</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 ClinicalAI Monitor | IBM BoB AI Innovation Hackathon | Problem P1</span>
+      <span>Built with <span class="ibm-tag">IBM BoB AI</span></span>
+    </div>
+  </div>
+</footer>
+<button id="scrollTop" title="Back to top">↑</button>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Site Risk Dashboard | ClinicalAI Monitor</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/dashboard.css" />
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="container-lg">
+    <a href="index.html" class="nav-brand">
+      <div class="brand-icon">⚕</div>
+      <div><strong>ClinicalAI Monitor</strong><span class="sub">IBM BoB Hackathon 2026</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="patient-checker.html">Patient Checker</a></li>
+      <li><a href="site-dashboard.html" class="active">Site Risk</a></li>
+      <li><a href="documentation.html">Docs</a></li>
+      <li><a href="patient-checker.html" class="nav-cta">Analyze Patient →</a></li>
+    </ul>
+    <button class="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a><span>/</span>
+      <a href="dashboard.html">Dashboard</a><span>/</span>
+      <span>Site Risk Dashboard</span>
+    </div>
+    <h1>🏥 Site Risk Dashboard</h1>
+    <p>Hospital-level risk rankings sorted by aggregated patient risk scores. Identifies sites requiring urgent attention.</p>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<section style="padding:2.5rem 0;background:#F4F4F4;min-height:80vh">
+  <div class="container">
+
+    <!-- Site KPI summary -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;margin-bottom:2rem">
+      <div class="kpi-card">
+        <div class="kpi-icon blue">🏥</div>
+        <div class="kpi-body">
+          <div class="kpi-label">Total Sites</div>
+          <div class="kpi-value" id="siteTotal">10</div>
+          <div class="kpi-delta">Research hospitals</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon red">🔴</div>
+        <div class="kpi-body">
+          <div class="kpi-label">Critical Sites</div>
+          <div class="kpi-value" id="siteCritical">—</div>
+          <div class="kpi-delta down">Risk score ≥ 81</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon orange">🟠</div>
+        <div class="kpi-body">
+          <div class="kpi-label">High Risk Sites</div>
+          <div class="kpi-value" id="siteHigh">—</div>
+          <div class="kpi-delta down">Risk score 61–80</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon green">✅</div>
+        <div class="kpi-body">
+          <div class="kpi-label">Low Risk Sites</div>
+          <div class="kpi-value" id="siteLow">—</div>
+          <div class="kpi-delta up">Risk score 0–30</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bar chart -->
+    <div class="chart-card" style="margin-bottom:2rem">
+      <div class="chart-card-header">
+        <span class="chart-card-title">📊 Average Risk Score by Site (sorted highest first)</span>
+        <span style="font-size:0.82rem;color:#8D8D8D">Lower is better</span>
+      </div>
+      <canvas id="siteBarChart"></canvas>
+    </div>
+
+    <!-- Site Cards Grid -->
+    <div id="siteCardsGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.25rem;margin-bottom:2rem">
+      <!-- Rendered by JS -->
+    </div>
+
+    <!-- Full Site Table -->
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="padding:1.25rem 1.5rem;border-bottom:1px solid #E0E0E0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.75rem">
+        <h3 style="font-size:1rem;font-weight:700">📋 Site Risk Summary Table</h3>
+        <div style="display:flex;gap:0.75rem">
+          <select class="form-control" id="siteStatusFilter" style="width:160px">
+            <option value="">All Statuses</option>
+            <option value="Critical">Critical</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </select>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Site Name</th>
+              <th>Total Patients</th>
+              <th>Active</th>
+              <th>Major Dev.</th>
+              <th>Minor Dev.</th>
+              <th>Admin Dev.</th>
+              <th>Avg. Risk Score</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="siteTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Site Detail Modal -->
+<div class="modal-overlay" id="siteModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="siteModalTitle">Site Details</h3>
+      <button class="modal-close">✕</button>
+    </div>
+    <div class="modal-body" id="siteModalBody"></div>
+    <div class="modal-footer">
+      <a href="capa-report.html" class="btn btn-blue btn-sm">CAPA Report →</a>
+      <button class="btn btn-outline btn-sm" onclick="closeModal('siteModal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand"><h3>⚕ ClinicalAI Monitor</h3><p>IBM BoB AI Innovation Hackathon 2026 — Problem P1.</p></div>
+      <div class="footer-col">
+        <h4>Pages</h4>
+        <a href="index.html">Home</a><a href="about.html">About</a>
+        <a href="dashboard.html">Dashboard</a><a href="patient-checker.html">Patient Checker</a>
+      </div>
+      <div class="footer-col">
+        <h4>Reports</h4>
+        <a href="risk-analysis.html">Risk Analysis</a><a href="capa-report.html">CAPA Report</a>
+        <a href="site-dashboard.html">Site Risk</a><a href="documentation.html">Docs</a>
+      </div>
+      <div class="footer-col"><h4>Hackathon</h4><a href="#">IBM BoB Platform</a><a href="documentation.html">Architecture</a></div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 ClinicalAI Monitor | IBM BoB AI Innovation Hackathon | Problem P1</span>
+      <span>Built with <span class="ibm-tag">IBM BoB AI</span></span>
+    </div>
+  </div>
+</footer>
+<button id="scrollTop">↑</button>
+<div id="toast-container"></div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/ai-engine.js"></script>
+<script src="assets/js/charts.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+
+let allSites = [];
+
+document.addEventListener("DOMContentLoaded", () => {
+  allSites = window.AI.computeSiteRisks(window.APP_DATA.patients);
+
+  // KPIs
+  const critical = allSites.filter(s => s.status === "Critical").length;
+  const high     = allSites.filter(s => s.status === "High").length;
+  const low      = allSites.filter(s => s.status === "Low").length;
+  document.getElementById("siteCritical").textContent = critical;
+  document.getElementById("siteHigh").textContent     = high;
+  document.getElementById("siteLow").textContent      = low;
+
+  // Bar Chart
+  window.Charts.drawBarChart("siteBarChart", allSites);
+
+  // Cards
+  renderSiteCards(allSites);
+  renderSiteTable(allSites);
+
+  document.getElementById("siteStatusFilter").addEventListener("change", function() {
+    const filtered = this.value ? allSites.filter(s => s.status === this.value) : allSites;
+    renderSiteTable(filtered);
+  });
+
+  window.refreshCharts = () => window.Charts.drawBarChart("siteBarChart", allSites);
+  window.Charts.initCharts();
+});
+
+function renderSiteCards(sites) {
+  const grid = document.getElementById("siteCardsGrid");
+  grid.innerHTML = sites.map(s => {
+    const statusColors = { Critical:"#DA1E28", High:"#FF832B", Medium:"#B45309", Low:"#24A148" };
+    const color = statusColors[s.status] || "#24A148";
+    return `
+    <div class="card" style="border-top:4px solid ${color};cursor:pointer" onclick="showSiteModal('${s.siteId}')">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+        <div>
+          <div style="font-weight:700;font-size:1rem">${s.siteName}</div>
+          <div style="font-size:0.78rem;color:#8D8D8D">ID: ${s.siteId}</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:1.75rem;font-weight:800;color:${color}">${s.avgRisk}</div>
+          <div style="font-size:0.7rem;color:#8D8D8D">Risk Score</div>
+        </div>
+      </div>
+      <div class="progress-bar-wrap" style="margin-bottom:1rem">
+        <div class="progress-bar ${Utils.riskClass(s.avgRisk)}" style="width:${s.avgRisk}%"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;font-size:0.82rem;text-align:center">
+        <div style="background:#FFF1F1;border-radius:6px;padding:0.5rem">
+          <div style="font-weight:700;color:#DA1E28">${s.major}</div>
+          <div style="color:#8D8D8D;font-size:0.75rem">Major</div>
+        </div>
+        <div style="background:#FCF4D6;border-radius:6px;padding:0.5rem">
+          <div style="font-weight:700;color:#B45309">${s.minor}</div>
+          <div style="color:#8D8D8D;font-size:0.75rem">Minor</div>
+        </div>
+        <div style="background:#D0E2FF;border-radius:6px;padding:0.5rem">
+          <div style="font-weight:700;color:#0F62FE">${s.admin}</div>
+          <div style="color:#8D8D8D;font-size:0.75rem">Admin</div>
+        </div>
+      </div>
+      <div style="margin-top:0.75rem;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:0.82rem;color:#8D8D8D">${s.total} patients · ${s.activePatients} active</span>
+        ${window.AI.riskBadge(s.status)}
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function renderSiteTable(sites) {
+  const tbody = document.getElementById("siteTableBody");
+  tbody.innerHTML = sites.map((s, i) => `
+    <tr>
+      <td style="font-weight:700;color:${i<3?"#DA1E28":"#8D8D8D"}">${i+1}</td>
+      <td>
+        <strong>${s.siteName}</strong>
+        <div style="font-size:0.78rem;color:#8D8D8D">${s.siteId}</div>
+      </td>
+      <td style="font-weight:600">${s.total}</td>
+      <td>${s.activePatients}</td>
+      <td style="font-weight:700;color:${s.major>0?"#DA1E28":"#393939"}">${s.major}</td>
+      <td style="font-weight:700;color:${s.minor>0?"#B45309":"#393939"}">${s.minor}</td>
+      <td style="font-weight:700;color:${s.admin>0?"#0F62FE":"#393939"}">${s.admin}</td>
+      <td>
+        <div class="risk-score-cell">
+          <span class="risk-score-num" style="color:${Utils.riskColor(s.avgRisk)}">${s.avgRisk}</span>
+          <div style="flex:1;max-width:80px">
+            <div class="progress-bar-wrap"><div class="progress-bar ${Utils.riskClass(s.avgRisk)}" style="width:${s.avgRisk}%"></div></div>
+          </div>
+        </div>
+      </td>
+      <td>${window.AI.riskBadge(s.status)}</td>
+      <td>
+        <button class="action-btn" onclick="showSiteModal('${s.siteId}')">Details</button>
+      </td>
+    </tr>`).join("");
+}
+
+function showSiteModal(siteId) {
+  const site = allSites.find(s => s.siteId === siteId);
+  if (!site) return;
+  const sitePatients = window.APP_DATA.patients.filter(p => p.siteId === siteId);
+
+  document.getElementById("siteModalTitle").textContent = site.siteName;
+  document.getElementById("siteModalBody").innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1.25rem">
+      <div><span style="font-size:0.75rem;color:#8D8D8D;text-transform:uppercase;font-weight:700">Site ID</span><br>${site.siteId}</div>
+      <div><span style="font-size:0.75rem;color:#8D8D8D;text-transform:uppercase;font-weight:700">Total Patients</span><br>${site.total}</div>
+      <div><span style="font-size:0.75rem;color:#8D8D8D;text-transform:uppercase;font-weight:700">Average Risk Score</span><br>
+        <span style="font-size:1.2rem;font-weight:700;color:${Utils.riskColor(site.avgRisk)}">${site.avgRisk}</span>
+      </div>
+      <div><span style="font-size:0.75rem;color:#8D8D8D;text-transform:uppercase;font-weight:700">Status</span><br>${window.AI.riskBadge(site.status)}</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin-bottom:1.25rem">
+      <div style="background:#FFF1F1;border-radius:8px;padding:1rem;text-align:center">
+        <div style="font-size:1.5rem;font-weight:700;color:#DA1E28">${site.major}</div>
+        <div style="font-size:0.78rem;color:#8D8D8D">Major Deviations</div>
+      </div>
+      <div style="background:#FCF4D6;border-radius:8px;padding:1rem;text-align:center">
+        <div style="font-size:1.5rem;font-weight:700;color:#B45309">${site.minor}</div>
+        <div style="font-size:0.78rem;color:#8D8D8D">Minor Deviations</div>
+      </div>
+      <div style="background:#D0E2FF;border-radius:8px;padding:1rem;text-align:center">
+        <div style="font-size:1.5rem;font-weight:700;color:#0F62FE">${site.admin}</div>
+        <div style="font-size:0.78rem;color:#8D8D8D">Admin Deviations</div>
+      </div>
+    </div>
+    ${site.avgRisk >= 61 ? `
+      <div class="alert alert-danger">
+        ⚠️ <strong>Urgent:</strong> This site has a ${site.status} risk score. 
+        Immediate site visit by CRA recommended. Notify Sponsor within 48 hours.
+      </div>` : `
+      <div class="alert alert-success">
+        ✅ This site is within acceptable risk parameters. Continue standard monitoring.
+      </div>`}`;
+  openModal("siteModal");
+}
+</script>
+</body>
+</html>

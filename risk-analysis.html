@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Risk Analysis | ClinicalAI Monitor</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/dashboard.css" />
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="container-lg">
+    <a href="index.html" class="nav-brand">
+      <div class="brand-icon">⚕</div>
+      <div><strong>ClinicalAI Monitor</strong><span class="sub">IBM BoB Hackathon 2026</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="patient-checker.html">Patient Checker</a></li>
+      <li><a href="risk-analysis.html" class="active">Risk Analysis</a></li>
+      <li><a href="site-dashboard.html">Site Risk</a></li>
+      <li><a href="documentation.html">Docs</a></li>
+      <li><a href="patient-checker.html" class="nav-cta">Analyze Patient →</a></li>
+    </ul>
+    <button class="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a><span>/</span>
+      <a href="dashboard.html">Dashboard</a><span>/</span>
+      <span>Risk Analysis</span>
+    </div>
+    <h1>⚠️ AI Risk Analysis Report</h1>
+    <p>Comprehensive deviation analysis, severity breakdown, and risk scoring for all 200 patients.</p>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<section style="padding:2.5rem 0;background:#F4F4F4;min-height:80vh">
+  <div class="container-lg" style="padding:0 1.5rem">
+
+    <!-- Summary Row -->
+    <div class="kpi-grid" style="margin-bottom:2rem" id="riskKpiGrid">
+      <!-- Rendered by JS -->
+    </div>
+
+    <!-- Risk Distribution -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem">
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <span class="chart-card-title">🥧 Severity Distribution</span>
+        </div>
+        <canvas id="pieChartRisk"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <span class="chart-card-title">📊 Risk Category Breakdown</span>
+        </div>
+        <div id="categoryBreakdown" style="padding:0.5rem 0"></div>
+      </div>
+    </div>
+
+    <!-- Risk Category Explained -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;margin-bottom:2rem">
+      <div class="card" style="border-top:4px solid #24A148;text-align:center">
+        <div style="font-size:1.8rem;font-weight:800;color:#24A148" id="catLow">—</div>
+        <div style="font-weight:700;margin:0.25rem 0">🟢 Low Risk</div>
+        <div style="font-size:0.8rem;color:#8D8D8D">Score 0–30</div>
+      </div>
+      <div class="card" style="border-top:4px solid #F1C21B;text-align:center">
+        <div style="font-size:1.8rem;font-weight:800;color:#B45309" id="catMedium">—</div>
+        <div style="font-weight:700;margin:0.25rem 0">🟡 Medium Risk</div>
+        <div style="font-size:0.8rem;color:#8D8D8D">Score 31–60</div>
+      </div>
+      <div class="card" style="border-top:4px solid #FF832B;text-align:center">
+        <div style="font-size:1.8rem;font-weight:800;color:#FF832B" id="catHigh">—</div>
+        <div style="font-weight:700;margin:0.25rem 0">🟠 High Risk</div>
+        <div style="font-size:0.8rem;color:#8D8D8D">Score 61–80</div>
+      </div>
+      <div class="card" style="border-top:4px solid #DA1E28;text-align:center">
+        <div style="font-size:1.8rem;font-weight:800;color:#DA1E28" id="catCritical">—</div>
+        <div style="font-weight:700;margin:0.25rem 0">🔴 Critical Risk</div>
+        <div style="font-size:0.8rem;color:#8D8D8D">Score 81–100</div>
+      </div>
+    </div>
+
+    <!-- Full Patient Risk Table -->
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="padding:1.25rem 1.5rem;border-bottom:1px solid #E0E0E0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.75rem">
+        <h3 style="font-size:1rem;font-weight:700">📋 Complete Patient Risk Assessment</h3>
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
+          <div class="search-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="form-control" id="riskSearch" placeholder="Search..." style="width:200px;padding-left:2.25rem" />
+          </div>
+          <select class="form-control" id="riskCatFilter" style="width:160px">
+            <option value="">All Categories</option>
+            <option value="Critical">Critical</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </select>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Patient ID</th>
+              <th>Patient Name</th>
+              <th>Site</th>
+              <th>Major</th>
+              <th>Minor</th>
+              <th>Admin</th>
+              <th>Risk Score</th>
+              <th>Category</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="riskTableBody"></tbody>
+        </table>
+      </div>
+      <div style="padding:1rem 1.5rem;border-top:1px solid #E0E0E0">
+        <div class="pagination" id="riskPagination"></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand"><h3>⚕ ClinicalAI Monitor</h3><p>IBM BoB AI Innovation Hackathon 2026 — Problem P1.</p></div>
+      <div class="footer-col">
+        <h4>Pages</h4>
+        <a href="index.html">Home</a><a href="about.html">About</a>
+        <a href="dashboard.html">Dashboard</a><a href="patient-checker.html">Patient Checker</a>
+      </div>
+      <div class="footer-col">
+        <h4>Reports</h4>
+        <a href="risk-analysis.html">Risk Analysis</a><a href="capa-report.html">CAPA Report</a>
+        <a href="site-dashboard.html">Site Risk</a><a href="documentation.html">Docs</a>
+      </div>
+      <div class="footer-col"><h4>Hackathon</h4><a href="#">IBM BoB Platform</a><a href="documentation.html">Architecture</a></div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 ClinicalAI Monitor | IBM BoB AI Innovation Hackathon | Problem P1</span>
+      <span>Built with <span class="ibm-tag">IBM BoB AI</span></span>
+    </div>
+  </div>
+</footer>
+<button id="scrollTop">↑</button>
+<div id="toast-container"></div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/ai-engine.js"></script>
+<script src="assets/js/charts.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+const PAGE = 20;
+let riskPage = 1;
+let riskFiltered = [];
+
+document.addEventListener("DOMContentLoaded", () => {
+  const pts = window.APP_DATA.patients;
+  const results = pts.map(p => ({ patient: p, result: window.AI.analyzePatient(p) }))
+                    .sort((a,b) => b.result.riskScore - a.result.riskScore);
+
+  riskFiltered = [...results];
+
+  // KPIs
+  const kpis = window.AI.computeKPIs(pts);
+  const kpiGrid = document.getElementById("riskKpiGrid");
+  kpiGrid.innerHTML = `
+    <div class="kpi-card"><div class="kpi-icon red">🚨</div><div class="kpi-body"><div class="kpi-label">Major Deviations</div><div class="kpi-value">${kpis.majorDeviations}</div><div class="kpi-delta down">Critical protocol breaches</div></div></div>
+    <div class="kpi-card"><div class="kpi-icon yellow">⚠️</div><div class="kpi-body"><div class="kpi-label">Minor Deviations</div><div class="kpi-value">${kpis.minorDeviations}</div><div class="kpi-delta">Needs documentation</div></div></div>
+    <div class="kpi-card"><div class="kpi-icon blue">📎</div><div class="kpi-body"><div class="kpi-label">Admin Deviations</div><div class="kpi-value">${kpis.adminDeviations}</div><div class="kpi-delta">Process improvements</div></div></div>
+    <div class="kpi-card"><div class="kpi-icon orange">🏥</div><div class="kpi-body"><div class="kpi-label">High Risk Sites</div><div class="kpi-value">${kpis.highRiskSites}</div><div class="kpi-delta down">Needs urgent review</div></div></div>`;
+
+  // Category counts
+  let low=0, med=0, high=0, crit=0;
+  results.forEach(({ result: r }) => {
+    if      (r.riskCategory === "Critical") crit++;
+    else if (r.riskCategory === "High")     high++;
+    else if (r.riskCategory === "Medium")   med++;
+    else                                    low++;
+  });
+  document.getElementById("catLow").textContent      = low;
+  document.getElementById("catMedium").textContent   = med;
+  document.getElementById("catHigh").textContent     = high;
+  document.getElementById("catCritical").textContent = crit;
+
+  // Category breakdown visual
+  const total = results.length;
+  document.getElementById("categoryBreakdown").innerHTML = [
+    { label:"Critical", count:crit, color:"#DA1E28" },
+    { label:"High",     count:high, color:"#FF832B" },
+    { label:"Medium",   count:med,  color:"#F1C21B" },
+    { label:"Low",      count:low,  color:"#24A148" }
+  ].map(c => `
+    <div style="margin-bottom:1rem">
+      <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem">
+        <span style="font-size:0.88rem;font-weight:600">${c.label} Risk</span>
+        <span style="font-weight:700;color:${c.color}">${c.count} (${Math.round(c.count/total*100)}%)</span>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar" style="background:${c.color};width:${Math.round(c.count/total*100)}%"></div>
+      </div>
+    </div>`).join("");
+
+  // Pie chart
+  const dist = window.AI.computeSeverityDist(pts);
+  window.Charts.drawPieChart("pieChartRisk", dist);
+
+  renderRiskTable();
+});
+
+function renderRiskTable() {
+  const tbody  = document.getElementById("riskTableBody");
+  const total  = riskFiltered.length;
+  const start  = (riskPage - 1) * PAGE;
+  const slice  = riskFiltered.slice(start, start + PAGE);
+
+  tbody.innerHTML = slice.map(({ patient: p, result: r }, i) => `
+    <tr>
+      <td style="color:#8D8D8D;font-size:0.82rem">${start+i+1}</td>
+      <td><code style="color:#0F62FE;font-size:0.82rem">${p.id}</code></td>
+      <td><strong>${p.name}</strong></td>
+      <td style="font-size:0.82rem">${p.siteName.split(" ").slice(0,2).join(" ")}</td>
+      <td style="font-weight:700;color:${r.majorCount>0?"#DA1E28":"#393939"}">${r.majorCount}</td>
+      <td style="font-weight:700;color:${r.minorCount>0?"#B45309":"#393939"}">${r.minorCount}</td>
+      <td style="font-weight:700;color:${r.adminCount>0?"#0F62FE":"#393939"}">${r.adminCount}</td>
+      <td>
+        <div class="risk-score-cell">
+          <span class="risk-score-num" style="color:${Utils.riskColor(r.riskScore)}">${r.riskScore}</span>
+          <div style="flex:1;max-width:80px">
+            <div class="progress-bar-wrap"><div class="progress-bar ${Utils.riskClass(r.riskScore)}" style="width:${r.riskScore}%"></div></div>
+          </div>
+        </div>
+      </td>
+      <td>${window.AI.riskBadge(r.riskCategory)}</td>
+      <td>
+        <a href="capa-report.html?pid=${p.id}" class="action-btn" style="text-decoration:none">CAPA</a>
+      </td>
+    </tr>`).join("");
+
+  // Pagination
+  const pages = Math.ceil(total / PAGE);
+  const wrap  = document.getElementById("riskPagination");
+  let html = "";
+  if (riskPage > 1) html += `<button class="page-btn" onclick="goRiskPage(${riskPage-1})">←</button>`;
+  for (let p = Math.max(1,riskPage-2); p <= Math.min(pages,riskPage+2); p++) {
+    html += `<button class="page-btn ${p===riskPage?'active':''}" onclick="goRiskPage(${p})">${p}</button>`;
+  }
+  if (riskPage < pages) html += `<button class="page-btn" onclick="goRiskPage(${riskPage+1})">→</button>`;
+  wrap.innerHTML = html;
+}
+
+function goRiskPage(p) { riskPage = p; renderRiskTable(); }
+
+document.getElementById("riskSearch").addEventListener("input", function() {
+  const q = this.value.toLowerCase();
+  const catF = document.getElementById("riskCatFilter").value;
+  filterRiskTable(q, catF);
+});
+document.getElementById("riskCatFilter").addEventListener("change", function() {
+  const q = document.getElementById("riskSearch").value.toLowerCase();
+  filterRiskTable(q, this.value);
+});
+
+function filterRiskTable(q, cat) {
+  const all = window.APP_DATA.patients.map(p => ({ patient: p, result: window.AI.analyzePatient(p) }))
+                .sort((a,b) => b.result.riskScore - a.result.riskScore);
+  riskFiltered = all.filter(({ patient: p, result: r }) => {
+    const matchQ   = !q || p.id.toLowerCase().includes(q) || p.name.toLowerCase().includes(q);
+    const matchCat = !cat || r.riskCategory === cat;
+    return matchQ && matchCat;
+  });
+  riskPage = 1;
+  renderRiskTable();
+}
+</script>
+</body>
+</html>

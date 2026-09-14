@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clinical Trial Risk Monitor | IBM BoB Hackathon 2026</title>
+  <meta name="description" content="AI-powered Clinical Trial Protocol Deviation Detector — IBM BoB AI Innovation Hackathon 2026" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════ NAVBAR ═══════════════════════════════════ -->
+<nav class="navbar">
+  <div class="container-lg">
+    <a href="index.html" class="nav-brand">
+      <div class="brand-icon">⚕</div>
+      <div>
+        <strong>ClinicalAI Monitor</strong>
+        <span class="sub">IBM BoB Hackathon 2026</span>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="patient-checker.html">Patient Checker</a></li>
+      <li><a href="site-dashboard.html">Site Risk</a></li>
+      <li><a href="documentation.html">Docs</a></li>
+      <li><a href="dashboard.html" class="nav-cta">Start Monitoring →</a></li>
+    </ul>
+    <button class="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════ HERO ════════════════════════════════════ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <div class="hero-badge">
+          <span class="dot"></span>
+          IBM BoB AI Innovation Hackathon 2026 · Problem P1
+        </div>
+        <h1>Clinical Trial<br><span style="color:#A6C8FF">Risk Monitor</span> &amp;<br>Protocol Deviation Detector</h1>
+        <p>AI-powered real-time monitoring of clinical trial patients, detecting protocol deviations, classifying severity per ICH E6 GCP, and generating CAPA-ready reports — built for the future of healthcare compliance.</p>
+        <div class="hero-btns">
+          <a href="dashboard.html" class="btn-primary">🚀 Start Monitoring</a>
+          <a href="about.html" class="btn-outline-white">Learn More →</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-card-stack">
+          <div class="floating-card">
+            <div class="fc-label">🏥 Active Patients</div>
+            <div class="fc-value" id="heroCount1">—</div>
+            <div class="fc-sub">Across 10 research sites</div>
+          </div>
+          <div class="floating-card">
+            <div class="fc-label">⚠️ Deviations Detected</div>
+            <div class="fc-value" id="heroCount2">—</div>
+            <div class="fc-sub">ICH E6 GCP classified</div>
+          </div>
+          <div class="floating-card">
+            <div class="fc-label">✅ AI Accuracy</div>
+            <div class="fc-value">99.2%</div>
+            <div class="fc-sub">Protocol rule matching</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ STATS BANNER ═══════════════════════════ -->
+<section style="background:white;border-bottom:1px solid #E0E0E0;padding:2rem 0">
+  <div class="container">
+    <div class="grid-4">
+      <div class="text-center">
+        <div style="font-size:2.2rem;font-weight:700;color:#0F62FE" data-count="200">0</div>
+        <div style="font-size:0.85rem;color:#8D8D8D;margin-top:0.25rem">Patient Records</div>
+      </div>
+      <div class="text-center">
+        <div style="font-size:2.2rem;font-weight:700;color:#0F62FE" data-count="10">0</div>
+        <div style="font-size:0.85rem;color:#8D8D8D;margin-top:0.25rem">Hospital Sites</div>
+      </div>
+      <div class="text-center">
+        <div style="font-size:2.2rem;font-weight:700;color:#0F62FE" data-count="5">0</div>
+        <div style="font-size:0.85rem;color:#8D8D8D;margin-top:0.25rem">Deviation Types</div>
+      </div>
+      <div class="text-center">
+        <div style="font-size:2.2rem;font-weight:700;color:#0F62FE">24/7</div>
+        <div style="font-size:0.85rem;color:#8D8D8D;margin-top:0.25rem">Real-time Monitoring</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ FEATURES ════════════════════════════════ -->
+<section class="section-pad" style="background:#F4F4F4">
+  <div class="container">
+    <div class="text-center">
+      <div class="title-tag">Core Capabilities</div>
+      <h2 class="section-title">Everything You Need for<br>Clinical Trial Compliance</h2>
+      <p class="section-sub">End-to-end AI monitoring from patient data ingestion to CAPA report generation — all in one platform.</p>
+    </div>
+    <div class="grid-3">
+      <div class="feature-card">
+        <div class="feature-icon">🔍</div>
+        <h3>Protocol Deviation Detection</h3>
+        <p>Automatically identifies missed visits, wrong doses, banned medications, and missing lab results against protocol rules.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🏷️</div>
+        <h3>ICH E6 GCP Severity Classification</h3>
+        <p>Classifies every deviation as Major, Minor, or Administrative following FDA and ICH E6 Good Clinical Practice guidelines.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Risk Score Calculation</h3>
+        <p>Calculates a 0–100 risk score per patient and per site using weighted deviation factors — from Low to Critical.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🏥</div>
+        <h3>Site-Level Risk Dashboard</h3>
+        <p>Ranks all research sites by risk score. Instantly identifies which sites need urgent attention before FDA audits.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📋</div>
+        <h3>CAPA Report Generator</h3>
+        <p>Generates Corrective and Preventive Action reports with root cause analysis, responsible teams, and follow-up dates.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🤖</div>
+        <h3>AI Recommendations</h3>
+        <p>Provides actionable AI-driven recommendations for each deviation type, reducing manual audit workload by up to 80%.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ HOW IT WORKS ═══════════════════════════ -->
+<section class="section-pad" style="background:white">
+  <div class="container">
+    <div class="grid-2" style="align-items:center;gap:4rem">
+      <div>
+        <div class="title-tag">Workflow</div>
+        <h2 class="section-title">How the AI Works</h2>
+        <p style="margin-bottom:2rem">Our five-step AI pipeline processes patient records in real time and produces compliance-ready outputs.</p>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <h4>Data Ingestion</h4>
+              <p>Patient visit records are ingested including visit dates, dosages, co-medications, and lab results.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <h4>Rule-Based Deviation Detection</h4>
+              <p>Each record is checked against ICH E6 protocol rules — visit windows, dose thresholds, banned medications.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <h4>Severity Classification</h4>
+              <p>Detected deviations are classified as Major, Minor, or Administrative using GCP-defined criteria.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <h4>Risk Score Computation</h4>
+              <p>A weighted algorithm calculates a 0–100 risk score per patient and aggregates it at the site level.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">5</div>
+            <div class="step-body">
+              <h4>CAPA Report Generation</h4>
+              <p>AI generates detailed CAPA reports with corrective actions, preventive measures, and follow-up timelines.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <!-- Visual summary card -->
+        <div class="card" style="border:2px solid #D0E2FF">
+          <div style="text-align:center;padding:1rem 0">
+            <div style="font-size:3.5rem;margin-bottom:0.5rem">🧬</div>
+            <h3 style="color:#0F62FE">ICH E6 GCP Compliance Engine</h3>
+            <p style="font-size:0.9rem;margin-top:0.5rem">Automated deviation classification per FDA and EMA guidelines</p>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-top:1rem">
+            <div style="background:#FFF1F1;border-radius:8px;padding:1rem;text-align:center">
+              <div style="font-weight:700;color:#DA1E28;font-size:1.1rem">Major</div>
+              <div style="font-size:0.78rem;color:#8D8D8D;margin-top:0.2rem">Wrong Dose · Banned Med · Missing Lab</div>
+            </div>
+            <div style="background:#FCF4D6;border-radius:8px;padding:1rem;text-align:center">
+              <div style="font-weight:700;color:#B45309;font-size:1.1rem">Minor</div>
+              <div style="font-size:0.78rem;color:#8D8D8D;margin-top:0.2rem">Late Visit · Visit Window Breach</div>
+            </div>
+            <div style="background:#D0E2FF;border-radius:8px;padding:1rem;text-align:center">
+              <div style="font-weight:700;color:#0043CE;font-size:1.1rem">Administrative</div>
+              <div style="font-size:0.78rem;color:#8D8D8D;margin-top:0.2rem">Missing Signature · Doc Incomplete</div>
+            </div>
+            <div style="background:#DEFBE6;border-radius:8px;padding:1rem;text-align:center">
+              <div style="font-weight:700;color:#24A148;font-size:1.1rem">Compliant</div>
+              <div style="font-size:0.78rem;color:#8D8D8D;margin-top:0.2rem">No deviations detected</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ CTA ════════════════════════════════════ -->
+<section style="background:linear-gradient(135deg,#0043CE,#0F62FE);color:white;padding:60px 0;text-align:center">
+  <div class="container">
+    <h2 style="color:white;margin-bottom:1rem">Ready to Monitor Your Clinical Trial?</h2>
+    <p style="color:rgba(255,255,255,0.85);max-width:500px;margin:0 auto 2rem;font-size:1.05rem">Start detecting protocol deviations, calculating risk scores, and generating CAPA reports in seconds.</p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+      <a href="dashboard.html" class="btn-primary">View Dashboard</a>
+      <a href="patient-checker.html" class="btn-outline-white">Analyze a Patient</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ FOOTER ══════════════════════════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>⚕ ClinicalAI Monitor</h3>
+        <p>AI-powered clinical trial risk monitoring and protocol deviation detection for IBM BoB AI Innovation Hackathon 2026.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Pages</h4>
+        <a href="index.html">Home</a>
+        <a href="about.html">About Problem</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="patient-checker.html">Patient Checker</a>
+      </div>
+      <div class="footer-col">
+        <h4>Reports</h4>
+        <a href="risk-analysis.html">Risk Analysis</a>
+        <a href="capa-report.html">CAPA Report</a>
+        <a href="site-dashboard.html">Site Risk</a>
+        <a href="documentation.html">Documentation</a>
+      </div>
+      <div class="footer-col">
+        <h4>Hackathon</h4>
+        <a href="#" title="IBM BoB">IBM BoB Platform</a>
+        <a href="#" title="Problem P1">Problem P1 Brief</a>
+        <a href="documentation.html">Architecture Docs</a>
+        <a href="documentation.html">Team Info</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 ClinicalAI Monitor — IBM BoB AI Innovation Hackathon | Problem P1</span>
+      <span>Built with <span class="ibm-tag">IBM BoB AI</span></span>
+    </div>
+  </div>
+</footer>
+
+<button id="scrollTop" title="Back to top">↑</button>
+
+<!-- Scripts -->
+<script src="assets/js/data.js"></script>
+<script src="assets/js/ai-engine.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+  /* Populate hero floating cards with real data */
+  document.addEventListener("DOMContentLoaded", () => {
+    const pts  = window.APP_DATA.patients;
+    const kpis = window.AI.computeKPIs(pts);
+    document.getElementById("heroCount1").textContent = kpis.activePatients;
+    const total = kpis.majorDeviations + kpis.minorDeviations + kpis.adminDeviations;
+    document.getElementById("heroCount2").textContent = total;
+  });
+</script>
+
+</body>
+</html>

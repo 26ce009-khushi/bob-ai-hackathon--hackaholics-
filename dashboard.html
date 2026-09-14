@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Patient Monitoring Dashboard | ClinicalAI Monitor</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/dashboard.css" />
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="container-lg">
+    <a href="index.html" class="nav-brand">
+      <div class="brand-icon">⚕</div>
+      <div><strong>ClinicalAI Monitor</strong><span class="sub">IBM BoB Hackathon 2026</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="dashboard.html" class="active">Dashboard</a></li>
+      <li><a href="patient-checker.html">Patient Checker</a></li>
+      <li><a href="site-dashboard.html">Site Risk</a></li>
+      <li><a href="documentation.html">Docs</a></li>
+      <li><a href="patient-checker.html" class="nav-cta">Analyze Patient →</a></li>
+    </ul>
+    <button class="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- APP LAYOUT -->
+<div class="app-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Monitoring</div>
+      <a href="dashboard.html" class="sidebar-link active">
+        <span class="icon">📊</span> Overview Dashboard
+      </a>
+      <a href="patient-checker.html" class="sidebar-link">
+        <span class="icon">🔍</span> Patient Checker
+      </a>
+      <a href="risk-analysis.html" class="sidebar-link">
+        <span class="icon">⚠️</span> Risk Analysis
+        <span class="sidebar-badge" id="sidebarBadge">—</span>
+      </a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Reports</div>
+      <a href="capa-report.html" class="sidebar-link">
+        <span class="icon">📋</span> CAPA Report
+      </a>
+      <a href="site-dashboard.html" class="sidebar-link">
+        <span class="icon">🏥</span> Site Risk Dashboard
+      </a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Info</div>
+      <a href="about.html" class="sidebar-link">
+        <span class="icon">📖</span> About Problem
+      </a>
+      <a href="documentation.html" class="sidebar-link">
+        <span class="icon">📁</span> Documentation
+      </a>
+    </div>
+    <div style="padding:1.25rem;margin-top:auto">
+      <div style="background:#1A3A6B;border-radius:8px;padding:1rem;font-size:0.82rem;color:#A6C8FF">
+        <div style="font-weight:700;margin-bottom:0.3rem;color:white">🔒 ICH E6 GCP</div>
+        All deviations classified per FDA Good Clinical Practice guidelines.
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+
+    <!-- Dashboard Header -->
+    <div class="dash-header">
+      <div class="dash-title">
+        <h2>Patient Monitoring Dashboard</h2>
+        <p>Real-time overview of all 200 clinical trial patients across 10 sites</p>
+      </div>
+      <div class="dash-actions">
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" class="form-control" id="searchInput" placeholder="Search patients..." style="width:220px;padding-left:2.25rem" />
+        </div>
+        <div class="chip-filters">
+          <button class="chip active" data-filter="all">All</button>
+          <button class="chip" data-filter="major">Major</button>
+          <button class="chip" data-filter="minor">Minor</button>
+          <button class="chip" data-filter="none">Compliant</button>
+        </div>
+        <button class="btn btn-blue btn-sm" onclick="refreshDashboard()">↻ Refresh</button>
+      </div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="kpi-grid" id="kpiGrid">
+      <div class="kpi-card">
+        <div class="kpi-icon blue">👥</div>
+        <div class="kpi-body">
+          <div class="kpi-label">Total Patients</div>
+          <div class="kpi-value" id="kpiTotal">—</div>
+          <div class="kpi-delta up" id="kpiTotalSub">Across 10 sites</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon green">✅</div>
+        <div class="kpi-body">
+          <div class="kpi-label">Active Patients</div>
+          <div class="kpi-value" id="kpiActive">—</div>
+          <div class="kpi-delta up" id="kpiActiveSub">Currently enrolled</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon yellow">🗓️</div>
+        <div class="kpi-body">
+          <div class="kpi-label">Missed Visits</div>
+          <div class="kpi-value" id="kpiMissed">—</div>
+          <div class="kpi-delta down">Visit window breached</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon red">🚨</div>
+        <div class="kpi-body">
+          <div class="kpi-label">Major Deviations</div>
+          <div class="kpi-value" id="kpiMajor">—</div>
+          <div class="kpi-delta down">Requires immediate action</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon yellow">⚠️</div>
+        <div class="kpi-body">
+          <div class="kpi-label">Minor Deviations</div>
+          <div class="kpi-value" id="kpiMinor">—</div>
+          <div class="kpi-delta">Needs documentation</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon blue">📎</div>
+        <div class="kpi-body">
+          <div class="kpi-label">Admin Deviations</div>
+          <div class="kpi-value" id="kpiAdmin">—</div>
+          <div class="kpi-delta">Documentation gaps</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon orange">🏥</div>
+        <div class="kpi-body">
+          <div class="kpi-label">High Risk Sites</div>
+          <div class="kpi-value" id="kpiHighRisk">—</div>
+          <div class="kpi-delta down">Needs urgent review</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <span class="chart-card-title">🥧 Deviation Severity Distribution</span>
+        </div>
+        <div class="chart-area">
+          <canvas id="pieChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <span class="chart-card-title">📊 Risk Score by Site</span>
+        </div>
+        <div class="chart-area">
+          <canvas id="barChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card span-full">
+        <div class="chart-card-header">
+          <span class="chart-card-title">📈 Deviation Trend — Last 8 Weeks</span>
+          <div style="display:flex;gap:0.75rem;font-size:0.8rem">
+            <span style="color:#DA1E28">● Major</span>
+            <span style="color:#F1C21B">● Minor</span>
+            <span style="color:#0F62FE">● Admin</span>
+          </div>
+        </div>
+        <div class="chart-area">
+          <canvas id="lineChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Patient Table -->
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="padding:1.25rem 1.5rem;border-bottom:1px solid #E0E0E0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.75rem">
+        <h3 style="font-size:1rem;font-weight:700">👤 Patient Records</h3>
+        <span id="tableCount" style="font-size:0.85rem;color:#8D8D8D"></span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Patient ID</th>
+              <th>Name</th>
+              <th>Site</th>
+              <th>Visit Date</th>
+              <th>Status</th>
+              <th>Deviations</th>
+              <th>Risk Score</th>
+              <th>Severity</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="patientTableBody"></tbody>
+        </table>
+      </div>
+      <div style="padding:1rem 1.5rem;border-top:1px solid #E0E0E0">
+        <div class="pagination" id="paginationWrap"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Patient Detail Modal -->
+<div class="modal-overlay" id="patientModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalTitle">Patient Details</h3>
+      <button class="modal-close">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-footer">
+      <a href="capa-report.html" class="btn btn-blue btn-sm">Generate CAPA →</a>
+      <button class="btn btn-outline btn-sm" onclick="closeModal('patientModal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+<button id="scrollTop">↑</button>
+
+<!-- Scripts -->
+<script src="assets/js/data.js"></script>
+<script src="assets/js/ai-engine.js"></script>
+<script src="assets/js/charts.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+/* ────── Dashboard Logic ────── */
+const PAGE_SIZE = 15;
+let currentPage = 1;
+let filteredPatients = [];
+let allResults = [];
+
+function buildResults() {
+  allResults = window.APP_DATA.patients.map(p => ({
+    patient: p,
+    result:  window.AI.analyzePatient(p)
+  }));
+  filteredPatients = [...allResults];
+}
+
+function renderKPIs() {
+  const kpis = window.AI.computeKPIs(window.APP_DATA.patients);
+  document.getElementById("kpiTotal").textContent    = kpis.totalPatients;
+  document.getElementById("kpiActive").textContent   = kpis.activePatients;
+  document.getElementById("kpiMissed").textContent   = kpis.missedVisits;
+  document.getElementById("kpiMajor").textContent    = kpis.majorDeviations;
+  document.getElementById("kpiMinor").textContent    = kpis.minorDeviations;
+  document.getElementById("kpiAdmin").textContent    = kpis.adminDeviations;
+  document.getElementById("kpiHighRisk").textContent = kpis.highRiskSites;
+  document.getElementById("sidebarBadge").textContent = kpis.majorDeviations;
+}
+
+function renderCharts() {
+  const pts = window.APP_DATA.patients;
+  const dist = window.AI.computeSeverityDist(pts);
+  window.Charts.drawPieChart("pieChart", dist);
+
+  const siteRisks = window.AI.computeSiteRisks(pts);
+  window.Charts.drawBarChart("barChart", siteRisks);
+
+  const trend = window.AI.computeTrend(pts);
+  window.Charts.drawLineChart("lineChart", trend);
+}
+
+function renderTable() {
+  const tbody  = document.getElementById("patientTableBody");
+  const total  = filteredPatients.length;
+  const start  = (currentPage - 1) * PAGE_SIZE;
+  const slice  = filteredPatients.slice(start, start + PAGE_SIZE);
+
+  document.getElementById("tableCount").textContent = `Showing ${Math.min(start+1,total)}–${Math.min(start+PAGE_SIZE,total)} of ${total} patients`;
+
+  tbody.innerHTML = slice.map(({ patient: p, result: r }) => {
+    const scoreClass = Utils.riskClass(r.riskScore);
+    const topSeverity = r.majorCount > 0 ? "Major" : r.minorCount > 0 ? "Minor" : r.adminCount > 0 ? "Administrative" : "None";
+    return `<tr>
+      <td><code style="font-size:0.82rem;color:#0F62FE">${p.id}</code></td>
+      <td><strong>${p.name}</strong></td>
+      <td style="font-size:0.82rem">${p.siteName.split(" ").slice(0,2).join(" ")}</td>
+      <td style="font-size:0.82rem">${Utils.fmtDate(p.visitDate)}</td>
+      <td><span class="status-indicator"><span class="status-dot ${p.status==='Active'?'active':p.status==='Withdrawn'?'critical':'warning'}"></span>${p.status}</span></td>
+      <td style="font-weight:600">${r.totalDeviations}</td>
+      <td>
+        <div class="risk-score-cell">
+          <span class="risk-score-num" style="color:${Utils.riskColor(r.riskScore)}">${r.riskScore}</span>
+          <div style="flex:1;max-width:70px">
+            <div class="progress-bar-wrap"><div class="progress-bar ${scoreClass}" style="width:${r.riskScore}%"></div></div>
+          </div>
+        </div>
+      </td>
+      <td>${window.AI.severityBadge(topSeverity)}</td>
+      <td>
+        <button class="action-btn" onclick="showPatientModal('${p.id}')">View</button>
+        <a href="capa-report.html?pid=${p.id}" class="action-btn" style="text-decoration:none">CAPA</a>
+      </td>
+    </tr>`;
+  }).join("");
+
+  renderPagination(total);
+}
+
+function renderPagination(total) {
+  const pages = Math.ceil(total / PAGE_SIZE);
+  const wrap  = document.getElementById("paginationWrap");
+  let html = "";
+  const prev = currentPage > 1 ? currentPage - 1 : null;
+  const next = currentPage < pages ? currentPage + 1 : null;
+  if (prev) html += `<button class="page-btn" onclick="goPage(${prev})">←</button>`;
+  for (let p = Math.max(1,currentPage-2); p <= Math.min(pages,currentPage+2); p++) {
+    html += `<button class="page-btn ${p===currentPage?'active':''}" onclick="goPage(${p})">${p}</button>`;
+  }
+  if (next) html += `<button class="page-btn" onclick="goPage(${next})">→</button>`;
+  wrap.innerHTML = html;
+}
+
+function goPage(p) { currentPage = p; renderTable(); window.scrollTo({top:0,behavior:"smooth"}); }
+
+function showPatientModal(pid) {
+  const entry = allResults.find(e => e.patient.id === pid);
+  if (!entry) return;
+  const { patient: p, result: r } = entry;
+
+  document.getElementById("modalTitle").textContent = `${p.id} — ${p.name}`;
+  document.getElementById("modalBody").innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1.25rem">
+      <div><span style="font-size:0.75rem;color:#8D8D8D;text-transform:uppercase;font-weight:700">Site</span><br>${p.siteName}</div>
+      <div><span style="font-size:0.75rem;color:#8D8D8D;text-transform:uppercase;font-weight:700">Visit Date</span><br>${Utils.fmtDate(p.visitDate)}</div>
+      <div><span style="font-size:0.75rem;color:#8D8D8D;text-transform:uppercase;font-weight:700">Dose</span><br>${p.doseGiven} mg (expected ${p.expectedDose} mg)</div>
+      <div><span style="font-size:0.75rem;color:#8D8D8D;text-transform:uppercase;font-weight:700">Co-medication</span><br>${p.comed}</div>
+    </div>
+    <div style="margin-bottom:1rem">
+      <strong>Risk Score: </strong>${window.AI.riskBadge(r.riskCategory)} 
+      <span style="font-size:1.1rem;font-weight:700;color:${Utils.riskColor(r.riskScore)};margin-left:0.5rem">${r.riskScore}/100</span>
+    </div>
+    ${r.deviations.length === 0
+      ? '<div class="alert alert-success">✅ No protocol deviations detected. Patient is fully compliant.</div>'
+      : r.deviations.map(d => `
+        <div class="alert ${d.severity==='Major'?'alert-danger':d.severity==='Minor'?'alert-warning':'alert-info'}" style="margin-bottom:0.5rem">
+          ${window.AI.severityBadge(d.severity)} <strong>${d.type}</strong><br>
+          <span style="font-size:0.87rem">${d.detail}</span>
+        </div>`).join("")
+    }`;
+  openModal("patientModal");
+}
+
+/* Search & Filter */
+document.getElementById("searchInput").addEventListener("input", function() {
+  const q = this.value.toLowerCase();
+  filteredPatients = allResults.filter(({ patient: p }) =>
+    p.id.toLowerCase().includes(q) ||
+    p.name.toLowerCase().includes(q) ||
+    p.siteName.toLowerCase().includes(q)
+  );
+  currentPage = 1;
+  renderTable();
+});
+
+document.querySelectorAll(".chip[data-filter]").forEach(chip => {
+  chip.addEventListener("click", function() {
+    document.querySelectorAll(".chip[data-filter]").forEach(c => c.classList.remove("active"));
+    this.classList.add("active");
+    const f = this.dataset.filter;
+    filteredPatients = allResults.filter(({ result: r }) => {
+      if (f === "all")   return true;
+      if (f === "major") return r.majorCount > 0;
+      if (f === "minor") return r.minorCount > 0 && r.majorCount === 0;
+      if (f === "none")  return r.totalDeviations === 0;
+      return true;
+    });
+    currentPage = 1;
+    renderTable();
+  });
+});
+
+function refreshDashboard() {
+  Utils.showLoading("Refreshing data...");
+  setTimeout(() => {
+    buildResults();
+    filteredPatients = [...allResults];
+    renderKPIs();
+    renderCharts();
+    renderTable();
+    Utils.hideLoading();
+    Utils.showToast("Dashboard refreshed successfully!", "success");
+  }, 800);
+}
+
+window.refreshCharts = renderCharts;
+
+/* Init */
+document.addEventListener("DOMContentLoaded", () => {
+  buildResults();
+  renderKPIs();
+  renderCharts();
+  renderTable();
+  window.Charts.initCharts();
+});
+</script>
+</body>
+</html>

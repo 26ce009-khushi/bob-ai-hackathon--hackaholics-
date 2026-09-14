@@ -1,0 +1,182 @@
+/* ============================================================
+   Dashboard-specific styles
+   Clinical Trial Risk Monitor — IBM BoB Hackathon 2026
+   ============================================================ */
+
+/* Layout with sidebar */
+.app-layout {
+  display: flex;
+  min-height: calc(100vh - var(--nav-height));
+}
+
+/* Sidebar */
+.sidebar {
+  width: var(--sidebar-width);
+  background: #161616;
+  color: #C6C6C6;
+  flex-shrink: 0;
+  position: sticky;
+  top: var(--nav-height);
+  height: calc(100vh - var(--nav-height));
+  overflow-y: auto;
+  padding: 1.5rem 0;
+  transition: var(--transition);
+}
+.sidebar-section { margin-bottom: 1.5rem; }
+.sidebar-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #6F6F6F;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0 1.25rem;
+  margin-bottom: 0.5rem;
+}
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 1.25rem;
+  color: #C6C6C6;
+  font-size: 0.88rem;
+  font-weight: 500;
+  transition: var(--transition);
+  border-left: 3px solid transparent;
+}
+.sidebar-link:hover {
+  background: #262626;
+  color: white;
+}
+.sidebar-link.active {
+  background: #1B3A7A;
+  color: white;
+  border-left-color: var(--ibm-blue);
+}
+.sidebar-link .icon { font-size: 1.05rem; width: 20px; text-align: center; }
+.sidebar-badge {
+  margin-left: auto;
+  background: var(--red);
+  color: white;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.15rem 0.45rem;
+  border-radius: 50px;
+}
+
+/* Main content area */
+.main-content {
+  flex: 1;
+  padding: 2rem;
+  overflow-x: hidden;
+  max-width: calc(100% - var(--sidebar-width));
+}
+
+/* Dashboard Header bar */
+.dash-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.dash-title h2 { font-size: 1.35rem; margin-bottom: 0.15rem; }
+.dash-title p  { font-size: 0.85rem; color: var(--gray-50); }
+.dash-actions  { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+
+/* KPI Grid */
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; margin-bottom: 2rem; }
+
+/* Chart Cards */
+.chart-card {
+  background: white;
+  border-radius: var(--radius);
+  border: 1px solid var(--gray-20);
+  box-shadow: var(--shadow);
+  padding: 1.5rem;
+}
+.chart-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+.chart-card-title { font-weight: 700; font-size: 0.95rem; }
+.chart-area { width: 100%; }
+
+/* Charts layout */
+.charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+.charts-grid .span-full { grid-column: 1 / -1; }
+
+/* Patient table chip actions */
+.action-btn {
+  background: none;
+  border: 1.5px solid var(--gray-20);
+  border-radius: var(--radius-sm);
+  padding: 0.3rem 0.65rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--gray-80);
+  cursor: pointer;
+  transition: var(--transition);
+}
+.action-btn:hover { background: var(--ibm-blue-light); border-color: var(--ibm-blue); color: var(--ibm-blue); }
+
+/* Progress bar */
+.progress-bar-wrap { height: 8px; background: var(--gray-20); border-radius: 4px; overflow: hidden; }
+.progress-bar { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+.progress-bar.low      { background: var(--green); }
+.progress-bar.medium   { background: var(--yellow); }
+.progress-bar.high     { background: var(--orange); }
+.progress-bar.critical { background: var(--red); }
+
+/* Risk score visual inline */
+.risk-score-cell { display: flex; align-items: center; gap: 0.6rem; }
+.risk-score-num  { font-weight: 700; font-size: 1rem; min-width: 32px; }
+
+/* Site status dots */
+.status-indicator {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  font-size: 0.82rem; font-weight: 600;
+}
+.status-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.status-dot.active   { background: var(--green); box-shadow: 0 0 0 3px var(--green-light); }
+.status-dot.warning  { background: var(--yellow); box-shadow: 0 0 0 3px var(--yellow-light); }
+.status-dot.critical { background: var(--red); box-shadow: 0 0 0 3px var(--red-light); }
+
+/* Pagination */
+.pagination {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0.4rem; margin-top: 1.5rem;
+}
+.page-btn {
+  width: 36px; height: 36px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--gray-20);
+  background: white;
+  color: var(--gray-80);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: var(--transition);
+}
+.page-btn:hover, .page-btn.active { background: var(--ibm-blue); color: white; border-color: var(--ibm-blue); }
+
+/* Responsive sidebar */
+@media (max-width: 900px) {
+  .sidebar { display: none; }
+  .main-content { max-width: 100%; padding: 1.25rem; }
+}
+@media (max-width: 768px) {
+  .charts-grid { grid-template-columns: 1fr; }
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .dash-header { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 480px) {
+  .kpi-grid { grid-template-columns: 1fr; }
+}

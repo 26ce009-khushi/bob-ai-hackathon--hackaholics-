@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CAPA Report Generator | ClinicalAI Monitor</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/dashboard.css" />
+  <style>
+    @media print {
+      .navbar, footer, .no-print, button, #scrollTop, #toast-container { display: none !important; }
+      body { background: white; }
+      .report-container { max-width: 100%; padding: 0; }
+      .report-card { box-shadow: none; border: 1px solid #ccc; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar no-print">
+  <div class="container-lg">
+    <a href="index.html" class="nav-brand">
+      <div class="brand-icon">⚕</div>
+      <div><strong>ClinicalAI Monitor</strong><span class="sub">IBM BoB Hackathon 2026</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="patient-checker.html">Patient Checker</a></li>
+      <li><a href="capa-report.html" class="active">CAPA Report</a></li>
+      <li><a href="site-dashboard.html">Site Risk</a></li>
+      <li><a href="documentation.html">Docs</a></li>
+      <li><a href="patient-checker.html" class="nav-cta">Analyze Patient →</a></li>
+    </ul>
+    <button class="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header no-print">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a><span>/</span>
+      <a href="dashboard.html">Dashboard</a><span>/</span>
+      <span>CAPA Report</span>
+    </div>
+    <h1>📋 CAPA Report Generator</h1>
+    <p>Corrective and Preventive Action reports for protocol deviations — ready for FDA submission.</p>
+  </div>
+</div>
+
+<!-- MAIN -->
+<section style="padding:2.5rem 0;background:#F4F4F4;min-height:80vh">
+  <div class="container">
+
+    <!-- Patient Selector -->
+    <div class="card no-print" style="margin-bottom:1.5rem;padding:1.5rem">
+      <h3 style="margin-bottom:1rem;font-size:1rem">Select Patient for CAPA Report</h3>
+      <div style="display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-end">
+        <div class="form-group" style="flex:1;min-width:220px;margin-bottom:0">
+          <label class="form-label">Patient ID</label>
+          <select class="form-control" id="capaPatientSelect">
+            <option value="">— Select a patient —</option>
+          </select>
+        </div>
+        <button class="btn btn-blue" onclick="loadCAPAReport()">📋 Generate Report</button>
+        <button class="btn btn-green" onclick="printReport()">🖨️ Print / Download PDF</button>
+        <button class="btn btn-outline" onclick="loadRandomCritical()">Load High-Risk Patient</button>
+      </div>
+    </div>
+
+    <!-- Report Placeholder -->
+    <div id="capaPlaceholder" style="text-align:center;padding:4rem 2rem">
+      <div style="font-size:4rem;margin-bottom:1rem">📋</div>
+      <h3 style="color:#0F62FE;margin-bottom:0.75rem">Select a Patient to Generate CAPA</h3>
+      <p style="color:#8D8D8D">Choose a patient above or click <strong>Load High-Risk Patient</strong> to see a sample CAPA report.</p>
+    </div>
+
+    <!-- CAPA Report -->
+    <div id="capaReport" style="display:none" class="report-container">
+
+      <!-- Report Header -->
+      <div class="report-card card" style="margin-bottom:1.5rem;padding:2rem;border-top:6px solid #0F62FE">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+          <div>
+            <div style="font-size:0.75rem;color:#0F62FE;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem">
+              Corrective and Preventive Action Report
+            </div>
+            <h2 id="capaReportTitle" style="font-size:1.5rem;margin-bottom:0.25rem">CAPA Report — PT-0001</h2>
+            <p id="capaReportSub" style="color:#8D8D8D;font-size:0.88rem"></p>
+          </div>
+          <div style="text-align:right;font-size:0.82rem;color:#8D8D8D">
+            <div><strong>Report Date:</strong> <span id="capaDate"></span></div>
+            <div><strong>Report No.:</strong> CAPA-<span id="capaNum"></span></div>
+            <div><strong>Status:</strong> <span class="badge badge-major">Open</span></div>
+            <div style="margin-top:0.5rem"><strong>IBM BoB Clinical AI Monitor</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Patient Information -->
+      <div class="report-card card" style="margin-bottom:1.5rem;padding:1.75rem">
+        <h3 style="margin-bottom:1.25rem;font-size:1rem;color:#0F62FE;border-bottom:1px solid #E0E0E0;padding-bottom:0.75rem">
+          👤 Section 1 — Patient Information
+        </h3>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem" id="capaPatientInfo"></div>
+      </div>
+
+      <!-- Deviations -->
+      <div class="report-card card" style="margin-bottom:1.5rem;padding:1.75rem">
+        <h3 style="margin-bottom:1.25rem;font-size:1rem;color:#DA1E28;border-bottom:1px solid #E0E0E0;padding-bottom:0.75rem">
+          ⚠️ Section 2 — Detected Protocol Deviations
+        </h3>
+        <div id="capaDeviationsSection"></div>
+      </div>
+
+      <!-- CAPA Table -->
+      <div class="report-card card" style="margin-bottom:1.5rem;padding:1.75rem">
+        <h3 style="margin-bottom:1.25rem;font-size:1rem;color:#24A148;border-bottom:1px solid #E0E0E0;padding-bottom:0.75rem">
+          ✅ Section 3 — Corrective &amp; Preventive Actions
+        </h3>
+        <div class="table-wrap">
+          <table id="capaTable">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Deviation Type</th>
+                <th>Severity</th>
+                <th>Root Cause</th>
+                <th>Corrective Action</th>
+                <th>Preventive Action</th>
+                <th>Responsible Team</th>
+                <th>Follow-up Date</th>
+              </tr>
+            </thead>
+            <tbody id="capaTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Risk Summary -->
+      <div class="report-card card" style="margin-bottom:1.5rem;padding:1.75rem">
+        <h3 style="margin-bottom:1.25rem;font-size:1rem;border-bottom:1px solid #E0E0E0;padding-bottom:0.75rem">
+          📊 Section 4 — Risk Assessment Summary
+        </h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center">
+          <div>
+            <canvas id="capaDount" style="display:block;margin:0 auto"></canvas>
+          </div>
+          <div id="capaRiskSummary"></div>
+        </div>
+      </div>
+
+      <!-- Sign-off -->
+      <div class="report-card card" style="padding:1.75rem">
+        <h3 style="margin-bottom:1.25rem;font-size:1rem;border-bottom:1px solid #E0E0E0;padding-bottom:0.75rem">
+          ✍️ Section 5 — Sign-off &amp; Approval
+        </h3>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2rem">
+          <div>
+            <div style="border-bottom:1px solid #393939;height:40px;margin-bottom:0.5rem"></div>
+            <div style="font-size:0.82rem;color:#8D8D8D">Principal Investigator</div>
+            <div style="font-size:0.82rem;margin-top:0.2rem">Date: _______________</div>
+          </div>
+          <div>
+            <div style="border-bottom:1px solid #393939;height:40px;margin-bottom:0.5rem"></div>
+            <div style="font-size:0.82rem;color:#8D8D8D">Site Coordinator</div>
+            <div style="font-size:0.82rem;margin-top:0.2rem">Date: _______________</div>
+          </div>
+          <div>
+            <div style="border-bottom:1px solid #393939;height:40px;margin-bottom:0.5rem"></div>
+            <div style="font-size:0.82rem;color:#8D8D8D">Sponsor Medical Monitor</div>
+            <div style="font-size:0.82rem;margin-top:0.2rem">Date: _______________</div>
+          </div>
+        </div>
+        <div style="margin-top:1.5rem;padding:1rem;background:#F4F4F4;border-radius:8px;font-size:0.82rem;color:#393939">
+          <strong>Disclaimer:</strong> This CAPA report was generated by the IBM BoB ClinicalAI Monitor using ICH E6 Good Clinical Practice guidelines. 
+          All corrective and preventive actions are AI-generated recommendations and must be reviewed and approved by the Principal Investigator 
+          before regulatory submission. This document is confidential.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="no-print">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand"><h3>⚕ ClinicalAI Monitor</h3><p>IBM BoB AI Innovation Hackathon 2026 — Problem P1.</p></div>
+      <div class="footer-col">
+        <h4>Pages</h4>
+        <a href="index.html">Home</a><a href="about.html">About</a>
+        <a href="dashboard.html">Dashboard</a><a href="patient-checker.html">Patient Checker</a>
+      </div>
+      <div class="footer-col">
+        <h4>Reports</h4>
+        <a href="risk-analysis.html">Risk Analysis</a><a href="capa-report.html">CAPA Report</a>
+        <a href="site-dashboard.html">Site Risk</a><a href="documentation.html">Docs</a>
+      </div>
+      <div class="footer-col"><h4>Hackathon</h4><a href="#">IBM BoB Platform</a><a href="documentation.html">Architecture</a></div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 ClinicalAI Monitor | IBM BoB AI Innovation Hackathon | Problem P1</span>
+      <span>Built with <span class="ibm-tag">IBM BoB AI</span></span>
+    </div>
+  </div>
+</footer>
+<button id="scrollTop" class="no-print">↑</button>
+<div id="toast-container"></div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/ai-engine.js"></script>
+<script src="assets/js/charts.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+
+// Populate patient selector
+document.addEventListener("DOMContentLoaded", () => {
+  const sel = document.getElementById("capaPatientSelect");
+  window.APP_DATA.patients.forEach(p => {
+    const opt = document.createElement("option");
+    opt.value = p.id;
+    opt.textContent = `${p.id} — ${p.name} (${p.siteName.split(" ").slice(0,2).join(" ")})`;
+    sel.appendChild(opt);
+  });
+
+  // Check URL param
+  const params = new URLSearchParams(location.search);
+  if (params.get("pid")) {
+    sel.value = params.get("pid");
+    loadCAPAReport();
+  } else if (params.get("demo")) {
+    // Load from session storage
+    loadFromSession();
+  }
+});
+
+function loadFromSession() {
+  const raw = sessionStorage.getItem("lastPatient");
+  if (!raw) { loadRandomCritical(); return; }
+  const p = JSON.parse(raw);
+  renderCAPAReport(p);
+}
+
+function loadRandomCritical() {
+  const all = window.APP_DATA.patients
+    .map(p => ({ p, r: window.AI.analyzePatient(p) }))
+    .filter(x => x.r.riskCategory === "Critical" || x.r.riskCategory === "High");
+  if (all.length === 0) return;
+  const pick = all[Math.floor(Math.random() * Math.min(all.length, 10))];
+  document.getElementById("capaPatientSelect").value = pick.p.id;
+  renderCAPAReport(pick.p);
+}
+
+function loadCAPAReport() {
+  const pid = document.getElementById("capaPatientSelect").value;
+  if (!pid) { Utils.showToast("Please select a patient first.", "warning"); return; }
+  const patient = window.APP_DATA.patients.find(p => p.id === pid);
+  if (!patient) return;
+  Utils.showLoading("Generating CAPA Report...");
+  setTimeout(() => {
+    renderCAPAReport(patient);
+    Utils.hideLoading();
+    Utils.showToast("CAPA Report generated!", "success");
+  }, 800);
+}
+
+function renderCAPAReport(patient) {
+  const result = window.AI.analyzePatient(patient);
+  const today  = new Date().toISOString().split("T")[0];
+  const capaNo = Math.floor(1000 + Math.random() * 9000);
+
+  document.getElementById("capaPlaceholder").style.display = "none";
+  document.getElementById("capaReport").style.display      = "block";
+
+  document.getElementById("capaReportTitle").textContent = `CAPA Report — ${patient.id}`;
+  document.getElementById("capaReportSub").textContent   = `${patient.name} | ${patient.siteName}`;
+  document.getElementById("capaDate").textContent = Utils.fmtDate(today);
+  document.getElementById("capaNum").textContent  = capaNo;
+
+  // Patient info
+  const info = [
+    ["Patient ID",         patient.id],
+    ["Patient Name",       patient.name],
+    ["Site",               patient.siteName],
+    ["Visit Date",         Utils.fmtDate(patient.visitDate)],
+    ["Scheduled Date",     Utils.fmtDate(patient.scheduledDate)],
+    ["Dose Given",         patient.doseGiven + " mg"],
+    ["Expected Dose",      patient.expectedDose + " mg"],
+    ["Co-medication",      patient.comed],
+    ["Lab Tests",          patient.labCompleted],
+    ["Documentation",      patient.docComplete],
+    ["Patient Status",     patient.status],
+    ["Risk Category",      result.riskCategory]
+  ];
+  document.getElementById("capaPatientInfo").innerHTML = info.map(([k,v]) => `
+    <div>
+      <div style="font-size:0.72rem;color:#8D8D8D;text-transform:uppercase;letter-spacing:0.05em;font-weight:700">${k}</div>
+      <div style="font-weight:600;margin-top:0.2rem">${v}</div>
+    </div>`).join("");
+
+  // Deviations section
+  const devEl = document.getElementById("capaDeviationsSection");
+  if (result.deviations.length === 0) {
+    devEl.innerHTML = '<div class="alert alert-success">✅ No protocol deviations detected. Patient is fully compliant with trial protocol.</div>';
+  } else {
+    devEl.innerHTML = result.deviations.map((d,i) => `
+      <div style="padding:1.25rem;background:${d.severity==="Major"?"#FFF1F1":d.severity==="Minor"?"#FCF4D6":"#D0E2FF22"};border-radius:8px;margin-bottom:0.75rem;border-left:4px solid ${d.severity==="Major"?"#DA1E28":d.severity==="Minor"?"#F1C21B":"#0F62FE"}">
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem">
+          <strong>Deviation ${i+1}:</strong>
+          ${window.AI.severityBadge(d.severity)}
+          <span style="font-weight:600">${d.type}</span>
+        </div>
+        <p style="font-size:0.88rem;color:#393939">${d.detail}</p>
+      </div>`).join("");
+  }
+
+  // CAPA table
+  const tbody = document.getElementById("capaTableBody");
+  if (result.deviations.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:#24A148;padding:1.5rem">✅ No CAPA actions required — Patient is compliant.</td></tr>`;
+  } else {
+    tbody.innerHTML = result.deviations.map((d,i) => `
+      <tr>
+        <td>${i+1}</td>
+        <td><strong>${d.type}</strong></td>
+        <td>${window.AI.severityBadge(d.severity)}</td>
+        <td style="font-size:0.82rem">${d.rootCause}</td>
+        <td style="font-size:0.82rem">${d.corrective}</td>
+        <td style="font-size:0.82rem">${d.preventive}</td>
+        <td style="font-size:0.82rem">${d.responsible}</td>
+        <td style="font-size:0.82rem;font-weight:600">${Utils.fmtDate(d.followUp)}</td>
+      </tr>`).join("");
+  }
+
+  // Risk donut
+  window.Charts.drawRiskDonut("capaDount", result.riskScore, result.riskCategory);
+
+  // Risk summary
+  document.getElementById("capaRiskSummary").innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:0.75rem">
+      <div style="display:flex;justify-content:space-between"><span>Major Deviations</span><strong style="color:#DA1E28">${result.majorCount}</strong></div>
+      <div style="display:flex;justify-content:space-between"><span>Minor Deviations</span><strong style="color:#B45309">${result.minorCount}</strong></div>
+      <div style="display:flex;justify-content:space-between"><span>Administrative</span><strong style="color:#0F62FE">${result.adminCount}</strong></div>
+      <hr style="border:none;border-top:1px solid #E0E0E0"/>
+      <div style="display:flex;justify-content:space-between"><span>Total Deviations</span><strong>${result.totalDeviations}</strong></div>
+      <div style="display:flex;justify-content:space-between;font-size:1.05rem">
+        <span>Risk Score</span>
+        <strong style="color:${Utils.riskColor(result.riskScore)}">${result.riskScore}/100</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between">
+        <span>Risk Category</span>
+        ${window.AI.riskBadge(result.riskCategory)}
+      </div>
+      <div style="margin-top:0.5rem;padding:0.75rem;background:#F4F4F4;border-radius:6px;font-size:0.82rem;color:#393939">
+        ${result.riskScore >= 61
+          ? "⚠️ <strong>High/Critical risk:</strong> Escalate to Medical Monitor immediately."
+          : result.riskScore >= 31
+          ? "⚠️ <strong>Medium risk:</strong> Review within 5 business days."
+          : "✅ <strong>Low risk:</strong> Document and monitor per standard protocol."
+        }
+      </div>
+    </div>`;
+
+  // Scroll to report
+  document.getElementById("capaReport").scrollIntoView({ behavior: "smooth" });
+}
+
+function printReport() {
+  const rep = document.getElementById("capaReport");
+  if (rep.style.display === "none") {
+    Utils.showToast("Please generate a CAPA report first.", "warning");
+    return;
+  }
+  window.print();
+}
+</script>
+</body>
+</html>

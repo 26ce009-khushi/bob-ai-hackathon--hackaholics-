@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Patient Record Checker | ClinicalAI Monitor</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/dashboard.css" />
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="container-lg">
+    <a href="index.html" class="nav-brand">
+      <div class="brand-icon">⚕</div>
+      <div><strong>ClinicalAI Monitor</strong><span class="sub">IBM BoB Hackathon 2026</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="patient-checker.html" class="active">Patient Checker</a></li>
+      <li><a href="site-dashboard.html">Site Risk</a></li>
+      <li><a href="documentation.html">Docs</a></li>
+      <li><a href="dashboard.html" class="nav-cta">Dashboard →</a></li>
+    </ul>
+    <button class="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a><span>/</span>
+      <a href="dashboard.html">Dashboard</a><span>/</span>
+      <span>Patient Record Checker</span>
+    </div>
+    <h1>🔍 AI Patient Record Checker</h1>
+    <p>Enter patient visit data to detect protocol deviations and calculate risk score in real time.</p>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<section style="padding:2.5rem 0;background:#F4F4F4;min-height:calc(100vh - 200px)">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start">
+
+      <!-- FORM PANEL -->
+      <div class="card" style="padding:2rem">
+        <div style="margin-bottom:1.75rem">
+          <h3 style="margin-bottom:0.4rem">📝 Patient Visit Information</h3>
+          <p style="font-size:0.875rem;color:#8D8D8D">Fill in all fields to run AI protocol deviation analysis.</p>
+        </div>
+
+        <form id="patientForm" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Patient ID <span class="required">*</span></label>
+              <input type="text" class="form-control" id="f_pid" placeholder="e.g. PT-0042" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Patient Name <span class="required">*</span></label>
+              <input type="text" class="form-control" id="f_name" placeholder="Full name" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Site / Hospital Name <span class="required">*</span></label>
+            <select class="form-control" id="f_site">
+              <option value="">— Select Research Site —</option>
+              <option>Apollo Research Center</option>
+              <option>Mayo Clinical Hub</option>
+              <option>Stanford Trial Institute</option>
+              <option>Royal London Clinical Centre</option>
+              <option>Max Healthcare Trial Unit</option>
+              <option>Johns Hopkins Research Site</option>
+              <option>Tata Memorial Clinical Wing</option>
+              <option>Geneva BioPharma Center</option>
+              <option>AIIMS Clinical Research Unit</option>
+              <option>Singapore Trial Hub</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Actual Visit Date <span class="required">*</span></label>
+              <input type="date" class="form-control" id="f_visitDate" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Scheduled Visit Date <span class="required">*</span></label>
+              <input type="date" class="form-control" id="f_schedDate" required />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Dose Administered (mg) <span class="required">*</span></label>
+              <input type="number" class="form-control" id="f_dose" placeholder="e.g. 50" min="0" required />
+              <div class="form-hint">Enter actual dose given to patient</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Expected Dose (mg) <span class="required">*</span></label>
+              <input type="number" class="form-control" id="f_expectedDose" placeholder="e.g. 50" min="0" required />
+              <div class="form-hint">Protocol-specified dose</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Co-medication (if any)</label>
+            <select class="form-control" id="f_comed">
+              <option value="None">None</option>
+              <optgroup label="✅ Permitted Medications">
+                <option>Paracetamol</option>
+                <option>Ibuprofen</option>
+                <option>Omeprazole</option>
+                <option>Atorvastatin</option>
+                <option>Metformin</option>
+                <option>Lisinopril</option>
+                <option>Amlodipine</option>
+                <option>Vitamin D</option>
+                <option>Folic Acid</option>
+              </optgroup>
+              <optgroup label="⛔ Prohibited Medications (will trigger deviation)">
+                <option>Warfarin</option>
+                <option>Methotrexate</option>
+                <option>Amiodarone</option>
+                <option>Rifampicin</option>
+                <option>Phenytoin</option>
+                <option>Carbamazepine</option>
+                <option>St. John's Wort</option>
+                <option>Ketoconazole</option>
+              </optgroup>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Lab Test Completed?</label>
+              <select class="form-control" id="f_lab">
+                <option value="Yes">Yes — All required tests done</option>
+                <option value="No">No — Missing lab tests</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Documentation Complete?</label>
+              <select class="form-control" id="f_doc">
+                <option value="Yes">Yes — All documents signed</option>
+                <option value="No">No — Documents missing</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:1rem;margin-top:0.5rem">
+            <button type="submit" class="btn btn-blue" style="flex:1;justify-content:center;padding:0.85rem" id="analyzeBtn">
+              🤖 Analyze Patient
+            </button>
+            <button type="button" class="btn btn-outline" id="loadSampleBtn">
+              Load Sample
+            </button>
+            <button type="reset" class="btn btn-outline" onclick="clearResults()">
+              Clear
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- RESULTS PANEL -->
+      <div id="resultsPanel" style="display:none">
+
+        <!-- Risk Score -->
+        <div class="card" style="margin-bottom:1.5rem;text-align:center;padding:2rem">
+          <div style="font-size:0.78rem;color:#8D8D8D;text-transform:uppercase;letter-spacing:0.05em;font-weight:700;margin-bottom:0.75rem">AI Risk Analysis Complete</div>
+          <canvas id="riskDonut" style="display:block;margin:0 auto"></canvas>
+          <div id="riskLabel" style="margin-top:0.75rem;font-size:0.9rem;color:#8D8D8D"></div>
+        </div>
+
+        <!-- Deviations List -->
+        <div class="card" style="margin-bottom:1.5rem;padding:1.5rem">
+          <h4 style="margin-bottom:1.25rem">🔎 Detected Deviations</h4>
+          <div id="deviationsList"></div>
+        </div>
+
+        <!-- Recommendations -->
+        <div class="card" style="padding:1.5rem">
+          <h4 style="margin-bottom:1.25rem">💡 AI Recommendations</h4>
+          <div id="recommendationsList"></div>
+          <div style="margin-top:1.5rem;display:flex;gap:0.75rem;flex-wrap:wrap">
+            <a href="capa-report.html" class="btn btn-blue btn-sm" id="capaLink">📋 Generate CAPA Report</a>
+            <a href="risk-analysis.html" class="btn btn-outline btn-sm">📊 View Risk Analysis</a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Placeholder before analysis -->
+      <div id="placeholderPanel">
+        <div class="card" style="text-align:center;padding:3rem 2rem;border:2px dashed #D0E2FF">
+          <div style="font-size:4rem;margin-bottom:1rem">🤖</div>
+          <h3 style="color:#0F62FE;margin-bottom:0.75rem">AI Analysis Ready</h3>
+          <p style="color:#8D8D8D;margin-bottom:1.5rem">Fill in the patient form and click <strong>Analyze Patient</strong> to detect protocol deviations and calculate the risk score.</p>
+          <div style="display:flex;flex-direction:column;gap:0.6rem;text-align:left;max-width:300px;margin:0 auto">
+            <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.88rem;color:#393939">
+              <span style="color:#0F62FE;font-weight:700">→</span> Visit timing analysis
+            </div>
+            <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.88rem;color:#393939">
+              <span style="color:#0F62FE;font-weight:700">→</span> Dose deviation check
+            </div>
+            <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.88rem;color:#393939">
+              <span style="color:#0F62FE;font-weight:700">→</span> Banned medication screen
+            </div>
+            <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.88rem;color:#393939">
+              <span style="color:#0F62FE;font-weight:700">→</span> Lab & documentation audit
+            </div>
+            <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.88rem;color:#393939">
+              <span style="color:#0F62FE;font-weight:700">→</span> ICH E6 severity classification
+            </div>
+            <div style="display:flex;align-items:center;gap:0.75rem;font-size:0.88rem;color:#393939">
+              <span style="color:#0F62FE;font-weight:700">→</span> 0–100 risk score calculation
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>⚕ ClinicalAI Monitor</h3>
+        <p>IBM BoB AI Innovation Hackathon 2026 — Problem P1.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Pages</h4>
+        <a href="index.html">Home</a><a href="about.html">About</a>
+        <a href="dashboard.html">Dashboard</a><a href="patient-checker.html">Patient Checker</a>
+      </div>
+      <div class="footer-col">
+        <h4>Reports</h4>
+        <a href="risk-analysis.html">Risk Analysis</a><a href="capa-report.html">CAPA Report</a>
+        <a href="site-dashboard.html">Site Risk</a><a href="documentation.html">Docs</a>
+      </div>
+      <div class="footer-col">
+        <h4>Hackathon</h4>
+        <a href="#">IBM BoB Platform</a><a href="documentation.html">Architecture</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 ClinicalAI Monitor | IBM BoB AI Innovation Hackathon | Problem P1</span>
+      <span>Built with <span class="ibm-tag">IBM BoB AI</span></span>
+    </div>
+  </div>
+</footer>
+<button id="scrollTop">↑</button>
+<div id="toast-container"></div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/ai-engine.js"></script>
+<script src="assets/js/charts.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+
+// Sample data loader
+document.getElementById("loadSampleBtn").addEventListener("click", () => {
+  const samples = [
+    { pid:"PT-DEMO1", name:"Aditya Sharma", site:"Apollo Research Center",      visit:"2025-12-15", sched:"2025-12-01", dose:100, exp:50,  comed:"Warfarin",  lab:"No",  doc:"No" },
+    { pid:"PT-DEMO2", name:"Sarah Johnson",  site:"Mayo Clinical Hub",            visit:"2025-12-10", sched:"2025-12-08", dose:25,  exp:25,  comed:"None",      lab:"Yes", doc:"Yes" },
+    { pid:"PT-DEMO3", name:"Raj Verma",      site:"AIIMS Clinical Research Unit", visit:"2025-11-20", sched:"2025-11-03", dose:50,  exp:50,  comed:"Rifampicin",lab:"Yes", doc:"No" },
+  ];
+  const s = samples[Math.floor(Math.random() * samples.length)];
+  document.getElementById("f_pid").value        = s.pid;
+  document.getElementById("f_name").value       = s.name;
+  document.getElementById("f_site").value       = s.site;
+  document.getElementById("f_visitDate").value  = s.visit;
+  document.getElementById("f_schedDate").value  = s.sched;
+  document.getElementById("f_dose").value       = s.dose;
+  document.getElementById("f_expectedDose").value = s.exp;
+  document.getElementById("f_comed").value      = s.comed;
+  document.getElementById("f_lab").value        = s.lab;
+  document.getElementById("f_doc").value        = s.doc;
+  Utils.showToast("Sample patient data loaded!", "info");
+});
+
+// Form submit
+document.getElementById("patientForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const pid       = document.getElementById("f_pid").value.trim();
+  const name      = document.getElementById("f_name").value.trim();
+  const site      = document.getElementById("f_site").value;
+  const visitDate = document.getElementById("f_visitDate").value;
+  const schedDate = document.getElementById("f_schedDate").value;
+  const dose      = parseFloat(document.getElementById("f_dose").value);
+  const expDose   = parseFloat(document.getElementById("f_expectedDose").value);
+  const comed     = document.getElementById("f_comed").value;
+  const lab       = document.getElementById("f_lab").value;
+  const doc       = document.getElementById("f_doc").value;
+
+  if (!pid || !name || !site || !visitDate || !schedDate || isNaN(dose) || isNaN(expDose)) {
+    Utils.showToast("Please fill in all required fields.", "error");
+    return;
+  }
+
+  // Store in sessionStorage for other pages
+  const patientData = {
+    id: pid, name, siteName: site, siteId: "MANUAL",
+    visitDate, scheduledDate: schedDate,
+    doseGiven: dose, expectedDose: expDose,
+    comed, labCompleted: lab, docComplete: doc, status: "Active"
+  };
+  sessionStorage.setItem("lastPatient", JSON.stringify(patientData));
+
+  Utils.showLoading("Running AI analysis...");
+
+  setTimeout(() => {
+    const result = window.AI.analyzePatient(patientData);
+    Utils.hideLoading();
+    displayResults(result, patientData);
+    Utils.showToast("AI analysis complete!", "success");
+  }, 1000);
+});
+
+function displayResults(result, patient) {
+  document.getElementById("placeholderPanel").style.display = "none";
+  document.getElementById("resultsPanel").style.display     = "block";
+
+  // Donut chart
+  window.Charts.drawRiskDonut("riskDonut", result.riskScore, result.riskCategory);
+  document.getElementById("riskLabel").innerHTML =
+    `Risk Score: <strong style="color:${Utils.riskColor(result.riskScore)}">${result.riskScore}/100</strong> &nbsp;
+     ${window.AI.riskBadge(result.riskCategory)} &nbsp;
+     <span style="font-size:0.8rem">${result.totalDeviations} deviation(s) detected</span>`;
+
+  // Deviations
+  const devEl = document.getElementById("deviationsList");
+  if (result.deviations.length === 0) {
+    devEl.innerHTML = '<div class="alert alert-success">✅ <strong>Fully Compliant.</strong> No protocol deviations detected for this patient.</div>';
+  } else {
+    devEl.innerHTML = result.deviations.map(d => `
+      <div class="alert ${d.severity==="Major"?"alert-danger":d.severity==="Minor"?"alert-warning":"alert-info"}" style="margin-bottom:0.75rem">
+        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.4rem">
+          ${window.AI.severityBadge(d.severity)}
+          <strong>${d.type}</strong>
+        </div>
+        <p style="font-size:0.875rem;margin:0">${d.detail}</p>
+      </div>`).join("");
+  }
+
+  // Recommendations
+  const recEl = document.getElementById("recommendationsList");
+  if (result.deviations.length === 0) {
+    recEl.innerHTML = '<div class="alert alert-success">✅ No corrective actions required. Continue monitoring per protocol schedule.</div>';
+  } else {
+    recEl.innerHTML = result.deviations.map((d, i) => `
+      <div style="margin-bottom:1rem;padding:1rem;background:#F4F4F4;border-radius:8px">
+        <div style="font-size:0.78rem;color:#0F62FE;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.35rem">
+          Recommendation ${i+1} · ${d.type}
+        </div>
+        <p style="font-size:0.9rem;color:#161616;margin-bottom:0.4rem"><strong>✅ Corrective:</strong> ${d.corrective}</p>
+        <p style="font-size:0.9rem;color:#161616;margin-bottom:0.4rem"><strong>🛡️ Preventive:</strong> ${d.preventive}</p>
+        <p style="font-size:0.82rem;color:#8D8D8D">👤 ${d.responsible} &nbsp;|&nbsp; 📅 Follow-up: ${d.followUp}</p>
+      </div>`).join("");
+  }
+
+  // Update CAPA link
+  document.getElementById("capaLink").href = `capa-report.html?demo=1`;
+
+  // Smooth scroll to results
+  document.getElementById("resultsPanel").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function clearResults() {
+  document.getElementById("resultsPanel").style.display     = "none";
+  document.getElementById("placeholderPanel").style.display = "block";
+  sessionStorage.removeItem("lastPatient");
+}
+</script>
+</body>
+</html>

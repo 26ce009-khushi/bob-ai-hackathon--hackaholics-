@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Documentation | ClinicalAI Monitor</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <style>
+    .doc-layout { display: grid; grid-template-columns: 240px 1fr; gap: 0; min-height: calc(100vh - 64px); }
+    .doc-sidebar { position: sticky; top: 64px; height: calc(100vh - 64px); overflow-y: auto; background: white; border-right: 1px solid #E0E0E0; padding: 1.5rem 0; }
+    .doc-sidebar-label { font-size: 0.7rem; font-weight: 700; color: #8D8D8D; text-transform: uppercase; letter-spacing: 0.08em; padding: 0 1.25rem; margin: 1rem 0 0.4rem; }
+    .doc-sidebar a { display: block; padding: 0.45rem 1.25rem; font-size: 0.87rem; color: #393939; border-left: 3px solid transparent; transition: all 0.2s; }
+    .doc-sidebar a:hover, .doc-sidebar a.active { background: #D0E2FF; color: #0F62FE; border-left-color: #0F62FE; }
+    .doc-main { padding: 2.5rem 3rem; max-width: 860px; }
+    .doc-section { margin-bottom: 3.5rem; scroll-margin-top: 80px; }
+    .doc-section h2 { font-size: 1.5rem; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 2px solid #E0E0E0; }
+    .doc-section h3 { font-size: 1.1rem; margin: 1.5rem 0 0.75rem; color: #0F62FE; }
+    .doc-section p  { margin-bottom: 0.9rem; line-height: 1.75; }
+    pre { background: #161616; color: #A8D1FF; padding: 1.25rem; border-radius: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 0.82rem; overflow-x: auto; margin: 1rem 0 1.5rem; line-height: 1.6; }
+    .tech-tag { display: inline-flex; align-items: center; gap: 0.4rem; background: #D0E2FF; color: #0043CE; padding: 0.3rem 0.75rem; border-radius: 50px; font-size: 0.78rem; font-weight: 700; margin: 0.25rem; }
+    .arch-box { border: 1.5px solid #E0E0E0; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: flex-start; gap: 1rem; }
+    .arch-num { width: 32px; height: 32px; background: #0F62FE; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; flex-shrink: 0; }
+    @media (max-width: 768px) { .doc-layout { grid-template-columns: 1fr; } .doc-sidebar { display: none; } .doc-main { padding: 1.5rem; } }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="container-lg">
+    <a href="index.html" class="nav-brand">
+      <div class="brand-icon">⚕</div>
+      <div><strong>ClinicalAI Monitor</strong><span class="sub">IBM BoB Hackathon 2026</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="patient-checker.html">Patient Checker</a></li>
+      <li><a href="site-dashboard.html">Site Risk</a></li>
+      <li><a href="documentation.html" class="active">Docs</a></li>
+      <li><a href="patient-checker.html" class="nav-cta">Analyze Patient →</a></li>
+    </ul>
+    <button class="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="doc-layout">
+
+  <!-- DOC SIDEBAR -->
+  <aside class="doc-sidebar">
+    <div class="doc-sidebar-label">Overview</div>
+    <a href="#intro" class="active">Introduction</a>
+    <a href="#problem">Problem Statement</a>
+    <a href="#existing">Existing System</a>
+    <a href="#solution">Proposed AI Solution</a>
+
+    <div class="doc-sidebar-label">Architecture</div>
+    <a href="#workflow">AI Workflow</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#ai-logic">AI Logic</a>
+
+    <div class="doc-sidebar-label">Technical</div>
+    <a href="#tech">Technologies Used</a>
+    <a href="#structure">Folder Structure</a>
+    <a href="#testing">Testing</a>
+
+    <div class="doc-sidebar-label">Project</div>
+    <a href="#future">Future Scope</a>
+    <a href="#team">Team Members</a>
+    <a href="#conclusion">Conclusion</a>
+  </aside>
+
+  <!-- MAIN DOC CONTENT -->
+  <main class="doc-main">
+
+    <!-- Introduction -->
+    <div class="doc-section" id="intro">
+      <h2>📖 Introduction</h2>
+      <p>The <strong>Clinical Trial Risk Monitor &amp; Protocol Deviation Detector</strong> is an AI-powered healthcare web application developed for the <strong>IBM BoB AI Innovation Hackathon 2026 — Problem Statement P1</strong>.</p>
+      <p>Clinical trials are the cornerstone of evidence-based medicine. However, managing compliance across hundreds of patients at dozens of research sites is an enormous challenge. Every missed visit, wrong dose, or banned co-medication represents a protocol deviation that must be detected, documented, classified, and reported to regulatory authorities.</p>
+      <p>This project automates the entire deviation detection-to-CAPA pipeline using AI, reducing the time required for clinical research associates (CRAs) from days to seconds.</p>
+    </div>
+
+    <!-- Problem Statement -->
+    <div class="doc-section" id="problem">
+      <h2>🎯 Problem Statement</h2>
+      <p>Clinical trials involve thousands of patients across multiple research sites. Ensuring every patient follows the approved protocol (visit schedule, dosing, co-medications, lab tests) is critical for:</p>
+      <ul style="padding-left:1.5rem;margin-bottom:1rem;line-height:2">
+        <li><strong>Patient Safety:</strong> Deviations can harm participants.</li>
+        <li><strong>Data Integrity:</strong> Deviations compromise trial results.</li>
+        <li><strong>Regulatory Compliance:</strong> FDA requires all deviations to be logged and reported per 21 CFR Part 312 and ICH E6 GCP.</li>
+        <li><strong>Site Performance:</strong> High-risk sites must be identified early to prevent audit failures.</li>
+      </ul>
+      <div class="alert alert-danger">
+        <strong>The Challenge:</strong> Traditional manual monitoring discovers deviations weeks after they occur, inconsistently classifies severity, and takes days to produce CAPA reports — leading to audit failures, trial delays, and millions in wasted investment.
+      </div>
+    </div>
+
+    <!-- Existing System -->
+    <div class="doc-section" id="existing">
+      <h2>⚠️ Existing System Limitations</h2>
+      <div style="display:flex;flex-direction:column;gap:0.75rem">
+        <div class="arch-box"><div class="arch-num" style="background:#DA1E28">1</div><div><strong>Manual Review Process</strong><p style="margin:0;font-size:0.9rem">CRAs manually review thousands of patient records — error-prone and time-consuming.</p></div></div>
+        <div class="arch-box"><div class="arch-num" style="background:#DA1E28">2</div><div><strong>Reactive Detection</strong><p style="margin:0;font-size:0.9rem">Deviations are found weeks after occurrence during periodic site visits, too late for intervention.</p></div></div>
+        <div class="arch-box"><div class="arch-num" style="background:#DA1E28">3</div><div><strong>Inconsistent Classification</strong><p style="margin:0;font-size:0.9rem">Same deviation classified differently by different monitors, leading to reporting inconsistencies.</p></div></div>
+        <div class="arch-box"><div class="arch-num" style="background:#DA1E28">4</div><div><strong>No Real-time Site Visibility</strong><p style="margin:0;font-size:0.9rem">No aggregated view of site-level risk until FDA audit — creating costly surprises.</p></div></div>
+        <div class="arch-box"><div class="arch-num" style="background:#DA1E28">5</div><div><strong>Slow CAPA Generation</strong><p style="margin:0;font-size:0.9rem">CAPA reports take days to prepare manually — delaying regulatory submissions.</p></div></div>
+      </div>
+    </div>
+
+    <!-- Solution -->
+    <div class="doc-section" id="solution">
+      <h2>🤖 Proposed AI Solution</h2>
+      <p>Our AI-powered solution addresses every limitation of the existing system through a fully automated, rule-based AI engine that applies ICH E6 GCP standards to every patient record in real time.</p>
+      <div style="display:flex;flex-direction:column;gap:0.75rem">
+        <div class="arch-box"><div class="arch-num">1</div><div><strong>Real-time Detection</strong><p style="margin:0;font-size:0.9rem">AI analyzes every patient record instantly — deviations detected same day they occur.</p></div></div>
+        <div class="arch-box"><div class="arch-num">2</div><div><strong>Standardized Classification</strong><p style="margin:0;font-size:0.9rem">All deviations classified consistently using ICH E6 GCP rules — no human subjectivity.</p></div></div>
+        <div class="arch-box"><div class="arch-num">3</div><div><strong>Risk Scoring</strong><p style="margin:0;font-size:0.9rem">Weighted 0–100 risk score per patient and site, providing clear audit priority rankings.</p></div></div>
+        <div class="arch-box"><div class="arch-num">4</div><div><strong>One-click CAPA Reports</strong><p style="margin:0;font-size:0.9rem">AI generates full CAPA reports with root cause, corrective actions, and follow-up timelines in seconds.</p></div></div>
+        <div class="arch-box"><div class="arch-num">5</div><div><strong>Site-level Dashboard</strong><p style="margin:0;font-size:0.9rem">Aggregated site risk rankings — always FDA-audit ready.</p></div></div>
+      </div>
+    </div>
+
+    <!-- Workflow -->
+    <div class="doc-section" id="workflow">
+      <h2>⚙️ AI Workflow</h2>
+      <p>The AI pipeline follows five sequential steps for every patient record:</p>
+      <pre>
+INPUT: Patient Visit Record
+       {id, name, site, visitDate, scheduledDate,
+        doseGiven, expectedDose, comed,
+        labCompleted, docComplete}
+          ↓
+STEP 1: Visit Timing Analysis
+        → |visitDate - scheduledDate| > 7 days → Minor
+        → |visitDate - scheduledDate| > 14 days → Major
+          ↓
+STEP 2: Dose Deviation Check
+        → ratio = doseGiven / expectedDose
+        → ratio ≥ 2 or ≤ 0.5 → Major
+        → other mismatch → Minor
+          ↓
+STEP 3: Co-medication Screen
+        → comed in BANNED_MEDS list → Major
+          ↓
+STEP 4: Lab Test Audit
+        → labCompleted === "No" → Major
+          ↓
+STEP 5: Documentation Check
+        → docComplete === "No" → Administrative
+          ↓
+OUTPUT: Risk Score = Σ(deviation weights), capped at 100
+        Category: Low(0-30) / Medium(31-60) / High(61-80) / Critical(81-100)
+        CAPA: {rootCause, corrective, preventive, responsible, followUp}
+</pre>
+    </div>
+
+    <!-- Architecture -->
+    <div class="doc-section" id="architecture">
+      <h2>🏗️ System Architecture</h2>
+      <pre>
+bob-ai-hackathon-clinical-risk-monitor/
+├── index.html              ← Home page
+├── about.html              ← Problem explanation
+├── dashboard.html          ← Main monitoring dashboard
+├── patient-checker.html    ← Patient form + AI analysis
+├── risk-analysis.html      ← Full risk report
+├── capa-report.html        ← CAPA generator
+├── site-dashboard.html     ← Hospital-level risk view
+├── documentation.html      ← This page
+└── assets/
+    ├── css/
+    │   ├── style.css       ← Global styles (IBM Design)
+    │   └── dashboard.css   ← Sidebar/dashboard layout
+    └── js/
+        ├── data.js         ← 200-patient dataset generator
+        ├── ai-engine.js    ← Protocol deviation detection AI
+        ├── charts.js       ← Canvas-based chart rendering
+        └── main.js         ← Utilities, toast, modal, counters
+</pre>
+    </div>
+
+    <!-- AI Logic -->
+    <div class="doc-section" id="ai-logic">
+      <h2>🧠 AI Logic Detail</h2>
+      <h3>Risk Scoring Weights</h3>
+      <pre>
+const WEIGHTS = {
+  majorDeviation:     25,   // Base weight for any major
+  minorDeviation:     10,   // Base weight for any minor
+  adminDeviation:      5,   // Base weight for admin
+  missedVisit:        15,   // Visit timing breach
+  wrongDose:          30,   // Dose error weight
+  bannedMed:          35,   // Highest weight — patient safety
+  missingCriticalLab: 20,   // Missing required lab test
+  missingDoc:          5    // Documentation gap
+};
+// Risk Score = Σ(applicable weights), min(total, 100)
+      </pre>
+      <h3>ICH E6 GCP Classification Rules</h3>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr><th>Deviation Type</th><th>Severity</th><th>ICH E6 Reference</th><th>Weight</th></tr></thead>
+          <tbody>
+            <tr><td>Wrong dose ≥2x or ≤0.5x expected</td><td><span class="badge badge-major">Major</span></td><td>ICH E6 4.9.2</td><td>30</td></tr>
+            <tr><td>Banned co-medication</td><td><span class="badge badge-major">Major</span></td><td>ICH E6 4.5.1</td><td>35</td></tr>
+            <tr><td>Missing critical lab test</td><td><span class="badge badge-major">Major</span></td><td>ICH E6 4.9.1</td><td>20</td></tr>
+            <tr><td>Visit &gt;14 days late</td><td><span class="badge badge-major">Major</span></td><td>ICH E6 6.3.1</td><td>25</td></tr>
+            <tr><td>Minor dose variance</td><td><span class="badge badge-minor">Minor</span></td><td>ICH E6 4.9.2</td><td>10</td></tr>
+            <tr><td>Visit 7–14 days outside window</td><td><span class="badge badge-minor">Minor</span></td><td>ICH E6 6.3.1</td><td>10</td></tr>
+            <tr><td>Missing documentation</td><td><span class="badge badge-admin">Administrative</span></td><td>ICH E6 4.9.3</td><td>5</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Technologies -->
+    <div class="doc-section" id="tech">
+      <h2>🛠️ Technologies Used</h2>
+      <h3>Frontend Stack</h3>
+      <div style="margin-bottom:1rem">
+        <span class="tech-tag">HTML5</span>
+        <span class="tech-tag">CSS3</span>
+        <span class="tech-tag">Vanilla JavaScript</span>
+        <span class="tech-tag">Canvas API</span>
+        <span class="tech-tag">IBM Design System</span>
+      </div>
+      <h3>Design</h3>
+      <div style="margin-bottom:1rem">
+        <span class="tech-tag">IBM Plex Sans</span>
+        <span class="tech-tag">IBM Blue #0F62FE</span>
+        <span class="tech-tag">Responsive Grid</span>
+        <span class="tech-tag">CSS Custom Properties</span>
+      </div>
+      <h3>AI / Logic</h3>
+      <div>
+        <span class="tech-tag">Rule-Based AI Engine</span>
+        <span class="tech-tag">ICH E6 GCP Rules</span>
+        <span class="tech-tag">Weighted Risk Scoring</span>
+        <span class="tech-tag">CAPA Generation</span>
+      </div>
+    </div>
+
+    <!-- Folder Structure -->
+    <div class="doc-section" id="structure">
+      <h2>📁 Folder Structure</h2>
+      <pre>
+bob-ai-hackathon-clinical-risk-monitor/
+├── README.md
+├── index.html
+├── about.html
+├── dashboard.html
+├── patient-checker.html
+├── risk-analysis.html
+├── capa-report.html
+├── site-dashboard.html
+├── documentation.html
+├── assets/
+│   ├── css/
+│   │   ├── style.css
+│   │   └── dashboard.css
+│   ├── js/
+│   │   ├── data.js
+│   │   ├── ai-engine.js
+│   │   ├── charts.js
+│   │   └── main.js
+│   ├── images/
+│   └── screenshots/
+├── docs/
+│   ├── project-documentation.md
+│   ├── ppt-content.md
+│   └── demo-script.md
+├── presentation/
+└── demo/
+</pre>
+    </div>
+
+    <!-- Testing -->
+    <div class="doc-section" id="testing">
+      <h2>🧪 Testing</h2>
+      <h3>Test Cases</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Test Scenario</th><th>Input</th><th>Expected Output</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Banned medication detection</td><td>comed = "Warfarin"</td><td>Major deviation, score +35</td><td><span class="badge badge-none">✅ Pass</span></td></tr>
+            <tr><td>Double dose detection</td><td>dose=100, expected=50</td><td>Major deviation, score +30</td><td><span class="badge badge-none">✅ Pass</span></td></tr>
+            <tr><td>Late visit detection</td><td>visit 20 days late</td><td>Major deviation, score +25</td><td><span class="badge badge-none">✅ Pass</span></td></tr>
+            <tr><td>Missing lab test</td><td>labCompleted="No"</td><td>Major deviation, score +20</td><td><span class="badge badge-none">✅ Pass</span></td></tr>
+            <tr><td>Documentation gap</td><td>docComplete="No"</td><td>Admin deviation, score +5</td><td><span class="badge badge-none">✅ Pass</span></td></tr>
+            <tr><td>Fully compliant patient</td><td>All fields correct</td><td>Score = 0, No deviations</td><td><span class="badge badge-none">✅ Pass</span></td></tr>
+            <tr><td>Critical risk patient</td><td>Multiple major deviations</td><td>Score ≥81, Critical badge</td><td><span class="badge badge-none">✅ Pass</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Future Scope -->
+    <div class="doc-section" id="future">
+      <h2>🔭 Future Scope</h2>
+      <div style="display:flex;flex-direction:column;gap:0.75rem">
+        <div class="arch-box"><div class="arch-num">1</div><div><strong>IBM Watson Integration</strong><p style="margin:0;font-size:0.9rem">Integrate IBM Watson NLP for analyzing free-text clinical notes and detecting deviations in unstructured data.</p></div></div>
+        <div class="arch-box"><div class="arch-num">2</div><div><strong>Predictive Risk Modeling</strong><p style="margin:0;font-size:0.9rem">Machine learning models to predict which patients are at risk of deviation before it occurs.</p></div></div>
+        <div class="arch-box"><div class="arch-num">3</div><div><strong>eCRF / EDC Integration</strong><p style="margin:0;font-size:0.9rem">Direct integration with Medidata Rave, Veeva Vault, or Oracle Clinical One for live data feeds.</p></div></div>
+        <div class="arch-box"><div class="arch-num">4</div><div><strong>Mobile App</strong><p style="margin:0;font-size:0.9rem">React Native mobile app for site coordinators to report and resolve deviations on-site.</p></div></div>
+        <div class="arch-box"><div class="arch-num">5</div><div><strong>Regulatory Submission Module</strong><p style="margin:0;font-size:0.9rem">Auto-generate FDA 21 CFR Part 312 deviation reports in eCTD format for regulatory submission.</p></div></div>
+      </div>
+    </div>
+
+    <!-- Team -->
+    <div class="doc-section" id="team">
+      <h2>👥 Team Members</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div class="card">
+          <div style="font-size:2rem;margin-bottom:0.5rem">👨‍💻</div>
+          <h4>Team Lead / AI Developer</h4>
+          <p style="font-size:0.88rem;color:#8D8D8D">Protocol deviation engine, risk scoring algorithm, CAPA logic</p>
+        </div>
+        <div class="card">
+          <div style="font-size:2rem;margin-bottom:0.5rem">🎨</div>
+          <h4>UI/UX Designer</h4>
+          <p style="font-size:0.88rem;color:#8D8D8D">IBM Design System, responsive layout, dashboard design</p>
+        </div>
+        <div class="card">
+          <div style="font-size:2rem;margin-bottom:0.5rem">📊</div>
+          <h4>Data Engineer</h4>
+          <p style="font-size:0.88rem;color:#8D8D8D">200-patient dataset, site aggregation, chart visualizations</p>
+        </div>
+        <div class="card">
+          <div style="font-size:2rem;margin-bottom:0.5rem">📋</div>
+          <h4>Documentation / Presenter</h4>
+          <p style="font-size:0.88rem;color:#8D8D8D">Project documentation, CAPA templates, demo script, PPT</p>
+        </div>
+      </div>
+      <div class="alert alert-info" style="margin-top:1rem">
+        <strong>IBM BoB AI Innovation Hackathon 2026</strong> · Problem Statement P1 · Clinical Trial Risk Monitor
+      </div>
+    </div>
+
+    <!-- Conclusion -->
+    <div class="doc-section" id="conclusion">
+      <h2>🏆 Conclusion</h2>
+      <p>The <strong>ClinicalAI Monitor</strong> demonstrates how AI can transform clinical trial compliance from a reactive, error-prone manual process into a proactive, real-time automated system.</p>
+      <p>By implementing ICH E6 GCP rules as a deterministic AI engine, we achieve 100% consistency in deviation classification — eliminating the subjective variability that plagues manual monitoring.</p>
+      <p>The system reduces CAPA generation time from days to seconds, provides site-level risk visibility for proactive FDA audit preparation, and delivers actionable AI recommendations that CRAs can act on immediately.</p>
+      <p>Built entirely with vanilla JavaScript and HTML/CSS with no external frameworks, the application is lightweight, fast, and deployable anywhere — demonstrating that powerful AI solutions don't require heavy infrastructure.</p>
+      <div style="background:linear-gradient(135deg,#0043CE,#0F62FE);color:white;border-radius:12px;padding:1.5rem;margin-top:1rem;text-align:center">
+        <div style="font-size:1.1rem;font-weight:700;margin-bottom:0.5rem">IBM BoB AI Innovation Hackathon 2026</div>
+        <div style="font-size:0.9rem;opacity:0.85">Problem P1 — Clinical Trial Risk Monitor & Protocol Deviation Detector</div>
+        <div style="margin-top:0.75rem"><a href="dashboard.html" style="background:white;color:#0F62FE;padding:0.6rem 1.4rem;border-radius:6px;font-weight:700;font-size:0.9rem;text-decoration:none">View Live Demo →</a></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand"><h3>⚕ ClinicalAI Monitor</h3><p>IBM BoB AI Innovation Hackathon 2026 — Problem P1.</p></div>
+      <div class="footer-col">
+        <h4>Pages</h4>
+        <a href="index.html">Home</a><a href="about.html">About</a>
+        <a href="dashboard.html">Dashboard</a><a href="patient-checker.html">Patient Checker</a>
+      </div>
+      <div class="footer-col">
+        <h4>Reports</h4>
+        <a href="risk-analysis.html">Risk Analysis</a><a href="capa-report.html">CAPA Report</a>
+        <a href="site-dashboard.html">Site Risk</a><a href="documentation.html">Docs</a>
+      </div>
+      <div class="footer-col"><h4>Hackathon</h4><a href="#">IBM BoB Platform</a><a href="#">Problem P1 Brief</a></div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 ClinicalAI Monitor | IBM BoB AI Innovation Hackathon | Problem P1</span>
+      <span>Built with <span class="ibm-tag">IBM BoB AI</span></span>
+    </div>
+  </div>
+</footer>
+<button id="scrollTop">↑</button>
+
+<script src="assets/js/main.js"></script>
+<script>
+  // Smooth highlight active doc section on scroll
+  const sections = document.querySelectorAll(".doc-section");
+  const docLinks  = document.querySelectorAll(".doc-sidebar a");
+  window.addEventListener("scroll", () => {
+    let current = "";
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) current = s.id; });
+    docLinks.forEach(a => {
+      a.classList.remove("active");
+      if (a.getAttribute("href") === `#${current}`) a.classList.add("active");
+    });
+  });
+</script>
+</body>
+</html>
