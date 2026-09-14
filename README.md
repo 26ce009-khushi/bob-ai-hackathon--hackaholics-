@@ -1,204 +1,121 @@
-# ⚕ ClinicalAI Monitor — Clinical Trial Risk Monitor & Protocol Deviation Detector
+# 🚀 [Your Project Title Here]
 
-> **IBM BoB AI Innovation Hackathon 2026 — Problem Statement P1**
-
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
-![Hackathon](https://img.shields.io/badge/IBM%20BoB%20Hackathon-2026-0F62FE)
-![License](https://img.shields.io/badge/license-MIT-green)
-![HTML](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)
-![CSS](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)
-![JS](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)
+> ⚠️ **Replace everything in `[ ]` brackets with your actual content before submission.**
 
 ---
 
-## 📋 Project Overview
+## 👥 Team
 
-The **Clinical Trial Risk Monitor & Protocol Deviation Detector** is a fully functional AI-powered healthcare web application that:
-
-- **Monitors** 200 clinical trial patient records across 10 research sites
-- **Detects** protocol deviations in real time (missed visits, wrong doses, banned co-medications, missing labs)
-- **Classifies** deviation severity per **ICH E6 GCP guidelines** (Major / Minor / Administrative)
-- **Calculates** site-level and patient-level **risk scores (0–100)** using a weighted AI algorithm
-- **Generates** CAPA-ready reports with root cause analysis, corrective actions, and follow-up dates
-- **Visualizes** data through interactive charts (Pie, Bar, Line, Donut)
+| Field | Value |
+|---|---|
+| **Team Name** | [Your Team Name] |
+| **Track** | [AI / DevOps / Sustainability / Open] |
+| **Team Lead** | [Name] — [email@ibm.com] |
+| **Members** | [Name 1], [Name 2], [Name 3] |
 
 ---
 
-## 🚀 Features
+## 🎯 Problem Statement
 
-| Feature | Description |
-|--------|-------------|
-| 🔍 Protocol Deviation Detection | Missed visits, wrong dose, banned meds, missing lab, documentation gaps |
-| 🏷️ ICH E6 GCP Classification | Major, Minor, Administrative severity badges |
-| 📊 Risk Score Engine | Weighted 0–100 score per patient and site |
-| 🏥 Site Risk Dashboard | 10 hospitals ranked by average risk score |
-| 📋 CAPA Report Generator | One-click printable CAPA with AI recommendations |
-| 📈 Data Visualizations | Pie chart, bar chart, line trend, risk donut |
-| 👥 200 Patient Records | Realistic dummy data across 10 global sites |
-| 🔎 Patient Record Checker | Interactive form to analyze any patient |
-| 🔔 Toast Notifications | Real-time feedback and alerts |
-| 📱 Fully Responsive | Works on all screen sizes |
+> In 2–3 sentences: What problem does your project solve? Who experiences this problem?
+
+[Describe the real-world problem your project addresses. Be specific about who the user is and what pain point they face.]
 
 ---
 
-## 🛠️ Technologies Used
+## 💡 Solution
 
-- **HTML5** — Semantic markup, accessible forms
-- **CSS3** — Custom properties, Flexbox, Grid, animations
-- **Vanilla JavaScript** — No frameworks, pure JS
-- **Canvas API** — Native chart rendering (no Chart.js dependency)
-- **IBM Design System** — IBM Blue (#0F62FE), IBM Plex Sans font
-- **ICH E6 GCP** — Good Clinical Practice compliance rules
+> In 2–3 sentences: What did you build? How does it solve the problem above?
+
+[Describe your solution clearly. Explain the core mechanism — what makes it work.]
 
 ---
 
-## 📁 Folder Structure
+## ✨ Key Features
+
+- **Feature 1:** [Brief description — e.g., "Real-time anomaly detection using watsonx.ai"]
+- **Feature 2:** [Brief description]
+- **Feature 3:** [Brief description]
+- **Feature 4:** [Optional]
+- **Feature 5:** [Optional]
+
+---
+
+## 🛠️ Tech Stack
+
+| Category | Technologies |
+|---|---|
+| **Languages** | [e.g., Python, TypeScript] |
+| **Frameworks** | [e.g., FastAPI, React] |
+| **IBM Technologies** | [e.g., watsonx.ai, IBM Bob, IBM Cloud] |
+| **Databases** | [e.g., PostgreSQL, Redis] |
+| **Other** | [e.g., Docker, GitHub Actions] |
+
+---
+
+## 📁 Repository Structure
 
 ```
-bob-ai-hackathon-clinical-risk-monitor/
-├── README.md                    ← This file
-├── index.html                   ← Home Page
-├── about.html                   ← About the Problem
-├── dashboard.html               ← Patient Monitoring Dashboard
-├── patient-checker.html         ← AI Patient Record Checker
-├── risk-analysis.html           ← Full Risk Analysis Report
-├── capa-report.html             ← CAPA Report Generator
-├── site-dashboard.html          ← Site Risk Dashboard
-├── documentation.html           ← Project Documentation
-├── assets/
-│   ├── css/
-│   │   ├── style.css            ← Global styles
-│   │   └── dashboard.css        ← Dashboard-specific styles
-│   ├── js/
-│   │   ├── data.js              ← 200-patient sample dataset
-│   │   ├── ai-engine.js         ← AI deviation detection logic
-│   │   ├── charts.js            ← Canvas-based chart rendering
-│   │   └── main.js              ← Utilities, toast, modal, counters
-│   ├── images/                  ← Place images here
-│   └── screenshots/             ← Place screenshots here
-├── docs/
-│   ├── project-documentation.md ← Detailed project docs
-│   ├── ppt-content.md           ← PPT slide content (7 slides)
-│   └── demo-script.md           ← 3-minute demo script
-├── presentation/                ← Add PPT file here
-└── demo/                        ← Demo assets folder
+├── src/                  # All source code
+├── docs/                 # Written documentation
+│   ├── problem-statement.md
+│   ├── solution-overview.md
+│   ├── architecture.md
+│   └── setup-guide.md
+├── demo/                 # Demo artifacts
+│   ├── screenshots/      # App screenshots
+│   └── demo-video-link.txt  # Link to demo video
+├── presentation/         # Slide deck
+└── submission.yaml       # Structured submission metadata
 ```
 
 ---
 
-## 🚀 Installation & Usage
+## ⚡ How to Run
 
-### Option 1: Open Directly (No server needed)
+> **Copy these exact steps from your [`docs/setup-guide.md`](docs/setup-guide.md)**
+
 ```bash
-# 1. Clone the repository
-git clone https://github.com/your-team/bob-ai-hackathon-clinical-risk-monitor.git
+# 1. Clone the repo
+git clone https://github.com/[your-repo].git
+cd [your-repo]
 
-# 2. Open index.html in any modern browser
-# That's it! No build steps required.
-```
+# 2. Install dependencies
+[your install command here]
 
-### Option 2: Local Development Server
-```bash
-# Using Python
-python -m http.server 8080
-# Then open http://localhost:8080
+# 3. Configure environment
+cp .env.example .env
+# Edit .env with your values
 
-# Using Node.js (npx)
-npx serve .
-# Then open http://localhost:3000
-
-# Using VS Code Live Server extension
-# Right-click index.html → Open with Live Server
+# 4. Run the project
+[your run command here]
 ```
 
 ---
 
-## 📖 Page Guide
+## 🖥️ Demo
 
-| Page | URL | Description |
-|------|-----|-------------|
-| Home | `index.html` | Hero, features, how it works |
-| About | `about.html` | Clinical trials, deviations, FDA problem |
-| Dashboard | `dashboard.html` | KPIs, charts, patient table |
-| Patient Checker | `patient-checker.html` | AI form analysis |
-| Risk Analysis | `risk-analysis.html` | Full 200-patient risk report |
-| CAPA Report | `capa-report.html` | Printable CAPA generator |
-| Site Dashboard | `site-dashboard.html` | 10-site risk rankings |
-| Documentation | `documentation.html` | Architecture, AI logic, tech stack |
+| Artifact | Link |
+|---|---|
+| 📹 Demo Video | [See demo/demo-video-link.txt](demo/demo-video-link.txt) |
+| 🌐 Live Demo | [See demo/live-demo-url.txt](demo/live-demo-url.txt) |
+| 🖼️ Screenshots | [See demo/screenshots/](demo/screenshots/) |
+| 📊 Presentation | [See presentation/slides.pdf](presentation/) |
 
 ---
 
-## 🧠 AI Logic Summary
+## ⚠️ Known Limitations
 
-### Protocol Deviation Rules (ICH E6 GCP)
-```
-Major Deviations (Weight: 20–35 points each):
-  ✗ Visit > 14 days outside window    (+25)
-  ✗ Dose ≥2x or ≤0.5x expected        (+30)
-  ✗ Banned co-medication               (+35)
-  ✗ Missing critical lab test          (+20)
+> Be honest — judges appreciate transparency over overclaiming.
 
-Minor Deviations (Weight: 10 points each):
-  ✗ Visit 7–14 days outside window
-  ✗ Minor dose variance
-
-Administrative Deviations (Weight: 5 points):
-  ✗ Missing documentation/signature
-
-Risk Score = Σ(weights), capped at 100
-Categories: Low(0-30) | Medium(31-60) | High(61-80) | Critical(81-100)
-```
+- [Limitation 1: e.g., "Authentication is mocked — not production-ready"]
+- [Limitation 2: e.g., "Only tested on Chrome"]
+- [Limitation 3: e.g., "Feature X is scaffolded but not fully implemented"]
 
 ---
 
-## 📸 Screenshots
+## 🏅 What We're Most Proud Of
 
-Place screenshots in `assets/screenshots/` folder:
-
-| File | Page |
-|------|------|
-| `home.png` | Home page hero section |
-| `dashboard.png` | Patient monitoring dashboard |
-| `patient-checker.png` | AI patient analysis form |
-| `risk-analysis.png` | Risk analysis report |
-| `capa-report.png` | CAPA report generated |
-| `site-dashboard.png` | Site risk rankings |
-| `charts.png` | Data visualizations |
+[Tell the judges what part of your submission is strongest and worth paying close attention to.]
 
 ---
-
-## 👥 Team Members
-
-| Role | Responsibility |
-|------|---------------|
-| 👨‍💻 **Team Lead / AI Developer** | AI engine, risk scoring, CAPA logic |
-| 🎨 **UI/UX Designer** | IBM Design System, responsive layout |
-| 📊 **Data Engineer** | Dataset, charts, aggregations |
-| 📋 **Documentation / Presenter** | Docs, demo script, presentation |
-
----
-
-## 🏆 IBM BoB AI Innovation Hackathon 2026
-
-- **Platform:** IBM BoB AI  
-- **Problem Statement:** P1 — Clinical Trial Risk Monitor & Protocol Deviation Detector  
-- **Track:** Healthcare AI  
-- **Guidelines Implemented:** ICH E6 Good Clinical Practice (GCP), FDA 21 CFR Part 312  
-
----
-
-## 📜 License
-
-MIT License — Free to use for educational and hackathon purposes.
-
----
-
-## 🙏 Acknowledgements
-
-- IBM BoB AI Platform for the hackathon infrastructure
-- ICH (International Council for Harmonisation) for E6 GCP guidelines
-- IBM Design System for the component design language
-
----
-
-*Built with ❤️ and IBM BoB AI for the IBM BoB AI Innovation Hackathon 2026*
