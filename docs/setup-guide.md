@@ -1,79 +1,130 @@
-# Setup Guide
+# Setup Guide — ClinicalAI Monitor
+## IBM BoB AI Innovation Hackathon 2026 | Problem P1 | Team Hackaholics
 
-> **This file is read by the automated evaluation pipeline. Be precise and complete.**
+> **This is a pure HTML/CSS/JavaScript application. No installation, no server, no build step is required.**
+
+---
 
 ## Prerequisites
 
-Before you begin, ensure you have the following installed:
+This application has **zero mandatory dependencies**. All you need is:
 
-- [ ] [e.g., Python 3.11+]
-- [ ] [e.g., Node.js 18+]
-- [ ] [e.g., Docker Desktop]
-- [ ] [e.g., An IBM Cloud account with watsonx.ai access]
+- [x] A modern web browser: **Chrome 100+**, Firefox 100+, or Edge 100+
+- [x] The repository cloned to your local machine
+
+Optional (for a local server experience):
+- [ ] Python 3.x (for `python -m http.server`) — pre-installed on most systems
+- [ ] Node.js 16+ (for `npx serve`) — only if you prefer it
+
+---
 
 ## Environment Variables
 
-Copy `.env.example` to `.env` and fill in the values:
+**None required.** This is a fully client-side application with no backend.
 
-```bash
-cp .env.example .env
-```
+The `src/.env.example` file is provided as a template for **future backend integration** (e.g., IBM watsonx.ai API, EDC system connection). It is not needed to run the current application.
 
-| Variable | Description | Required |
-|---|---|---|
-| `WATSONX_API_KEY` | Your IBM watsonx.ai API key | Yes |
-| `WATSONX_PROJECT_ID` | Your watsonx.ai project ID | Yes |
-| `DATABASE_URL` | PostgreSQL connection string | Yes |
-| `SLACK_WEBHOOK_URL` | Slack webhook for alerts | No |
+---
 
 ## Installation
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/[your-org]/[your-repo].git
-cd [your-repo]
+git clone https://github.com/YOUR_USERNAME/bob-ai-hackathone-hackaholics.git
 
-# 2. Install backend dependencies
-[your command — e.g.: pip install -r requirements.txt]
-
-# 3. Install frontend dependencies (if applicable)
-[your command — e.g.: cd frontend && npm install]
-
-# 4. Set up the database (if applicable)
-[your command — e.g.: python manage.py migrate]
+# 2. Enter the project directory
+cd bob-ai-hackathone-hackaholics
 ```
+
+That's it. No `npm install`, no `pip install`, no `docker compose` needed.
+
+---
 
 ## Running the Application
 
-```bash
-# Start the backend
-[your command — e.g.: uvicorn app.main:app --reload]
-
-# Start the frontend (in a separate terminal, if applicable)
-[your command — e.g.: cd frontend && npm run dev]
+### Option A — Direct File Open (Simplest)
+```
+Open the file  index.html  in Chrome, Firefox, or Edge.
+Double-click it in your file explorer, or drag it into a browser window.
 ```
 
-The application will be available at: `http://localhost:[PORT]`
+### Option B — Python Local Server (Recommended for best experience)
+```bash
+# Python 3
+python -m http.server 8080
+
+# Then open in browser:
+# http://localhost:8080
+```
+
+### Option C — Node.js Local Server
+```bash
+npx serve .
+
+# Then open in browser:
+# http://localhost:3000
+```
+
+### Option D — VS Code Live Server
+If you use VS Code, install the **Live Server** extension, right-click `index.html`, and select **"Open with Live Server"**.
+
+---
+
+## Application Pages
+
+Once running, navigate to these pages:
+
+| Page | URL (local server) | Description |
+|---|---|---|
+| Home | `http://localhost:8080/` | Landing page |
+| Dashboard | `http://localhost:8080/dashboard.html` | Main monitoring dashboard |
+| Patient Checker | `http://localhost:8080/patient-checker.html` | AI patient analyzer |
+| Site Risk | `http://localhost:8080/site-dashboard.html` | Site risk rankings |
+| Risk Analysis | `http://localhost:8080/risk-analysis.html` | Full patient risk table |
+| CAPA Report | `http://localhost:8080/capa-report.html` | Report generator |
+| Documentation | `http://localhost:8080/documentation.html` | In-app docs |
+
+---
+
+## Quick Demo Walkthrough
+
+```
+1. Open index.html         → Read the overview, see live stats in hero cards
+2. Open dashboard.html     → View all 200 patients, KPI cards, and 3 charts
+3. Open patient-checker.html → Click "Load Sample" then "Analyze Patient"
+4. Open capa-report.html   → Click "Load High-Risk Patient" then "Generate Report"
+5. Open site-dashboard.html → See 10 hospitals ranked by risk score
+```
+
+---
 
 ## Running Tests
 
-```bash
-[your test command — e.g.: pytest tests/ -v]
+The application includes a browser-based test suite. Open the browser console (F12) on any page and run:
+
+```javascript
+// Quick validation — paste in browser console on dashboard.html
+const pts = window.APP_DATA.patients;
+const kpis = window.AI.computeKPIs(pts);
+console.table(kpis);
+
+// Test single patient analysis
+const result = window.AI.analyzePatient(pts[0]);
+console.log(result);
+
+// Test site risk aggregation
+const sites = window.AI.computeSiteRisks(pts);
+console.table(sites);
 ```
 
-## Quick Demo (Optional)
-
-If you have a demo script or sample data to showcase the project quickly:
-
-```bash
-[e.g.: python demo/seed_demo_data.py]
-[e.g.: open http://localhost:8000/demo]
-```
+---
 
 ## Troubleshooting
 
 | Issue | Solution |
 |---|---|
-| [e.g., `ModuleNotFoundError`] | [e.g., Run `pip install -r requirements.txt` again] |
-| [e.g., Database connection refused] | [e.g., Ensure PostgreSQL is running: `docker compose up db`] |
-| [e.g., watsonx.ai 401 error] | [e.g., Check `WATSONX_API_KEY` in your `.env` file] |
+| Charts not rendering | Use a local server (Option B/C) instead of direct file open — some browsers restrict Canvas on `file://` |
+| Page looks broken | Ensure you are opening files from the repo root, not a subfolder |
+| Data resets on refresh | Expected behaviour — patient data is regenerated each load for variety |
+| Cross-page data lost | Patient Checker → CAPA flow uses `sessionStorage`; ensure both pages are in the same browser tab session |
+| Fonts not loading | Requires internet connection for Google Fonts (IBM Plex Sans); falls back to system sans-serif offline |

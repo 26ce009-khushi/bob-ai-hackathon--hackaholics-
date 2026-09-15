@@ -1,6 +1,12 @@
-https://youtu.be/your-demo-video-link-here
+https://youtu.be/REPLACE_WITH_YOUR_DEMO_VIDEO
 
-Replace the URL above with a link to your demo video.
+Replace the URL above with your actual demo video link after recording.
+
+Video requirements:
+  - Length: 3–5 minutes maximum
+  - Must show the application running (not just slides)
+  - Walk through: Home → Dashboard → Patient Checker → CAPA Report → Site Risk
+  - Audio narration strongly recommended
 
 Accepted platforms:
   - YouTube (public or unlisted)
@@ -8,8 +14,4 @@ Accepted platforms:
   - IBM Box (https://ibm.box.com/s/...)
   - Google Drive (set to "Anyone with the link can view")
 
-Video requirements:
-  - Length: 3–5 minutes maximum
-  - Must show the application running (not just slides)
-  - Should walk through at least one key feature end-to-end
-  - Audio narration strongly recommended
+Demo script available at: docs/demo-script.md
