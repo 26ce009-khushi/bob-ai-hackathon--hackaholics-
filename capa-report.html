@@ -30,8 +30,9 @@
       <li><a href="about.html">About</a></li>
       <li><a href="dashboard.html">Dashboard</a></li>
       <li><a href="patient-checker.html">Patient Checker</a></li>
-      <li><a href="capa-report.html" class="active">CAPA Report</a></li>
+      <li><a href="risk-analysis.html">Risk Analysis</a></li>
       <li><a href="site-dashboard.html">Site Risk</a></li>
+      <li><a href="capa-report.html" class="active">CAPA</a></li>
       <li><a href="documentation.html">Docs</a></li>
       <li><a href="patient-checker.html" class="nav-cta">Analyze Patient →</a></li>
     </ul>
@@ -56,8 +57,14 @@
 <section style="padding:2.5rem 0;background:#F4F4F4;min-height:80vh">
   <div class="container">
 
+    <!-- Selector Tabs -->
+    <div style="display:flex;gap:0.5rem;margin-bottom:1.25rem" class="no-print">
+      <button class="chip active" id="modePatient" onclick="setCapaMode('patient')">👤 Patient CAPA</button>
+      <button class="chip" id="modeSite" onclick="setCapaMode('site')">🏥 Site CAPA</button>
+    </div>
+
     <!-- Patient Selector -->
-    <div class="card no-print" style="margin-bottom:1.5rem;padding:1.5rem">
+    <div class="card no-print" id="patientSelectorCard" style="margin-bottom:1.5rem;padding:1.5rem">
       <h3 style="margin-bottom:1rem;font-size:1rem">Select Patient for CAPA Report</h3>
       <div style="display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-end">
         <div class="form-group" style="flex:1;min-width:220px;margin-bottom:0">
@@ -72,11 +79,100 @@
       </div>
     </div>
 
+    <!-- Site Selector -->
+    <div class="card no-print" id="siteSelectorCard" style="margin-bottom:1.5rem;padding:1.5rem;display:none">
+      <h3 style="margin-bottom:1rem;font-size:1rem">Select Site for Site-Level CAPA Report</h3>
+      <div style="display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-end">
+        <div class="form-group" style="flex:1;min-width:220px;margin-bottom:0">
+          <label class="form-label">Research Site</label>
+          <select class="form-control" id="capaSiteSelect">
+            <option value="">— Select a site —</option>
+          </select>
+        </div>
+        <button class="btn btn-blue" onclick="loadSiteCAPAReport()">📋 Generate Site CAPA</button>
+        <button class="btn btn-green" onclick="printReport()">🖨️ Print / Download PDF</button>
+        <button class="btn btn-outline" onclick="loadHighestRiskSite()">Load Highest Risk Site</button>
+      </div>
+    </div>
+
     <!-- Report Placeholder -->
     <div id="capaPlaceholder" style="text-align:center;padding:4rem 2rem">
       <div style="font-size:4rem;margin-bottom:1rem">📋</div>
-      <h3 style="color:#0F62FE;margin-bottom:0.75rem">Select a Patient to Generate CAPA</h3>
-      <p style="color:#8D8D8D">Choose a patient above or click <strong>Load High-Risk Patient</strong> to see a sample CAPA report.</p>
+      <h3 style="color:#0F62FE;margin-bottom:0.75rem">Select a Patient or Site to Generate CAPA</h3>
+      <p style="color:#8D8D8D">Choose a patient above or click <strong>Load High-Risk Patient</strong> to see a sample CAPA report.<br>Switch to <strong>Site CAPA</strong> tab for site-level corrective action reports.</p>
+    </div>
+
+    <!-- ═══════════════ SITE CAPA REPORT ═══════════════ -->
+    <div id="siteCapaReport" style="display:none" class="report-container">
+
+      <!-- Site Report Header -->
+      <div class="report-card card" style="margin-bottom:1.5rem;padding:2rem;border-top:6px solid #FF832B">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+          <div>
+            <div style="font-size:0.75rem;color:#FF832B;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem">
+              Site-Level Corrective and Preventive Action Report
+            </div>
+            <h2 id="siteCapaTitle" style="font-size:1.5rem;margin-bottom:0.25rem">Site CAPA — S01</h2>
+            <p id="siteCapaSub" style="color:#8D8D8D;font-size:0.88rem"></p>
+          </div>
+          <div style="text-align:right;font-size:0.82rem;color:#8D8D8D">
+            <div><strong>Report Date:</strong> <span id="siteCapaDate"></span></div>
+            <div><strong>Report No.:</strong> SITE-CAPA-<span id="siteCapaNum"></span></div>
+            <div><strong>Status:</strong> <span class="badge badge-major">Open</span></div>
+            <div style="margin-top:0.5rem"><strong>IBM BoB Clinical AI Monitor</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Site Risk Overview -->
+      <div class="report-card card" style="margin-bottom:1.5rem;padding:1.75rem">
+        <h3 style="margin-bottom:1.25rem;font-size:1rem;color:#FF832B;border-bottom:1px solid #E0E0E0;padding-bottom:0.75rem">
+          🏥 Section 1 — Site Risk Overview
+        </h3>
+        <div id="siteCapaOverview"></div>
+      </div>
+
+      <!-- Top 5 Highest Risk Patients -->
+      <div class="report-card card" style="margin-bottom:1.5rem;padding:1.75rem">
+        <h3 style="margin-bottom:1.25rem;font-size:1rem;color:#DA1E28;border-bottom:1px solid #E0E0E0;padding-bottom:0.75rem">
+          ⚠️ Section 2 — Top High-Risk Patients at this Site
+        </h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th><th>Patient ID</th><th>Name</th>
+                <th>Risk Score</th><th>Major</th><th>Minor</th><th>Admin</th><th>Top Deviation</th>
+              </tr>
+            </thead>
+            <tbody id="siteCapaPatients"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Site-Level CAPA Actions -->
+      <div class="report-card card" style="margin-bottom:1.5rem;padding:1.75rem">
+        <h3 style="margin-bottom:1.25rem;font-size:1rem;color:#24A148;border-bottom:1px solid #E0E0E0;padding-bottom:0.75rem">
+          ✅ Section 3 — Site-Level Corrective &amp; Preventive Actions
+        </h3>
+        <div id="siteCapaActions"></div>
+      </div>
+
+      <!-- Sign-off (reuse same structure) -->
+      <div class="report-card card" style="padding:1.75rem">
+        <h3 style="margin-bottom:1.25rem;font-size:1rem;border-bottom:1px solid #E0E0E0;padding-bottom:0.75rem">
+          ✍️ Section 4 — Sign-off &amp; Approval
+        </h3>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2rem">
+          <div><div style="border-bottom:1px solid #393939;height:40px;margin-bottom:0.5rem"></div><div style="font-size:0.82rem;color:#8D8D8D">Principal Investigator</div><div style="font-size:0.82rem;margin-top:0.2rem">Date: _______________</div></div>
+          <div><div style="border-bottom:1px solid #393939;height:40px;margin-bottom:0.5rem"></div><div style="font-size:0.82rem;color:#8D8D8D">CRA / Site Monitor</div><div style="font-size:0.82rem;margin-top:0.2rem">Date: _______________</div></div>
+          <div><div style="border-bottom:1px solid #393939;height:40px;margin-bottom:0.5rem"></div><div style="font-size:0.82rem;color:#8D8D8D">Sponsor Medical Monitor</div><div style="font-size:0.82rem;margin-top:0.2rem">Date: _______________</div></div>
+        </div>
+        <div style="margin-top:1.5rem;padding:1rem;background:#F4F4F4;border-radius:8px;font-size:0.82rem;color:#393939">
+          <strong>Disclaimer:</strong> This Site CAPA report was generated by the IBM BoB ClinicalAI Monitor using ICH E6 GCP guidelines. All actions are AI-generated recommendations and must be reviewed and approved by the Principal Investigator before submission.
+        </div>
+      </div>
+
     </div>
 
     <!-- CAPA Report -->
@@ -219,6 +315,18 @@
 <script src="assets/js/main.js"></script>
 <script>
 
+// ── Mode toggle (patient vs site)
+function setCapaMode(mode) {
+  document.getElementById("patientSelectorCard").style.display = mode === "patient" ? "block" : "none";
+  document.getElementById("siteSelectorCard").style.display    = mode === "site"    ? "block" : "none";
+  document.getElementById("modePatient").classList.toggle("active", mode === "patient");
+  document.getElementById("modeSite").classList.toggle("active", mode === "site");
+  // Reset reports
+  document.getElementById("capaReport").style.display    = "none";
+  document.getElementById("siteCapaReport").style.display = "none";
+  document.getElementById("capaPlaceholder").style.display = "block";
+}
+
 // Populate patient selector
 document.addEventListener("DOMContentLoaded", () => {
   const sel = document.getElementById("capaPatientSelect");
@@ -229,13 +337,25 @@ document.addEventListener("DOMContentLoaded", () => {
     sel.appendChild(opt);
   });
 
+  // Populate site selector
+  const siteSel = document.getElementById("capaSiteSelect");
+  window.APP_DATA.sites.forEach(s => {
+    const opt = document.createElement("option");
+    opt.value = s.id;
+    opt.textContent = `${s.id} — ${s.name} (${s.city}, ${s.country})`;
+    siteSel.appendChild(opt);
+  });
+
   // Check URL param
   const params = new URLSearchParams(location.search);
   if (params.get("pid")) {
     sel.value = params.get("pid");
     loadCAPAReport();
+  } else if (params.get("sid")) {
+    setCapaMode("site");
+    siteSel.value = params.get("sid");
+    loadSiteCAPAReport();
   } else if (params.get("demo")) {
-    // Load from session storage
     loadFromSession();
   }
 });
@@ -371,9 +491,136 @@ function renderCAPAReport(patient) {
   document.getElementById("capaReport").scrollIntoView({ behavior: "smooth" });
 }
 
+function loadSiteCAPAReport() {
+  const sid = document.getElementById("capaSiteSelect").value;
+  if (!sid) { Utils.showToast("Please select a site first.", "warning"); return; }
+  Utils.showLoading("Generating Site CAPA Report...");
+  setTimeout(() => {
+    const site = window.APP_DATA.sites.find(s => s.id === sid);
+    const sitePatients = window.APP_DATA.patients.filter(p => p.siteId === sid);
+    if (!site || !sitePatients.length) { Utils.hideLoading(); Utils.showToast("Site data not found.", "error"); return; }
+    renderSiteCAPAReport(site, sitePatients);
+    Utils.hideLoading();
+    Utils.showToast("Site CAPA Report generated!", "success");
+  }, 800);
+}
+
+function loadHighestRiskSite() {
+  const siteRisks = window.AI.computeSiteRisks(window.APP_DATA.patients);
+  if (!siteRisks.length) return;
+  const top = siteRisks[0];
+  document.getElementById("capaSiteSelect").value = top.siteId;
+  loadSiteCAPAReport();
+}
+
+function renderSiteCAPAReport(site, patients) {
+  const siteRisks = window.AI.computeSiteRisks(window.APP_DATA.patients);
+  const siteData  = siteRisks.find(s => s.siteId === site.id) || {};
+  const today     = new Date().toISOString().split("T")[0];
+  const capaNo    = Math.floor(1000 + Math.random() * 9000);
+
+  document.getElementById("capaPlaceholder").style.display  = "none";
+  document.getElementById("capaReport").style.display       = "none";
+  document.getElementById("siteCapaReport").style.display   = "block";
+
+  document.getElementById("siteCapaTitle").textContent = `Site CAPA — ${site.id}`;
+  document.getElementById("siteCapaSub").textContent   = `${site.name} | ${site.city}, ${site.country}`;
+  document.getElementById("siteCapaDate").textContent  = Utils.fmtDate(today);
+  document.getElementById("siteCapaNum").textContent   = capaNo;
+
+  // Overview section
+  const riskColor = Utils.riskColor(siteData.avgRisk || 0);
+  document.getElementById("siteCapaOverview").innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.25rem">
+      <div style="background:#FFF1F1;border-radius:8px;padding:1rem;text-align:center">
+        <div style="font-size:1.75rem;font-weight:800;color:#DA1E28">${siteData.major || 0}</div>
+        <div style="font-size:0.78rem;color:#8D8D8D">Major Deviations</div>
+      </div>
+      <div style="background:#FCF4D6;border-radius:8px;padding:1rem;text-align:center">
+        <div style="font-size:1.75rem;font-weight:800;color:#B45309">${siteData.minor || 0}</div>
+        <div style="font-size:0.78rem;color:#8D8D8D">Minor Deviations</div>
+      </div>
+      <div style="background:#D0E2FF;border-radius:8px;padding:1rem;text-align:center">
+        <div style="font-size:1.75rem;font-weight:800;color:#0F62FE">${siteData.admin || 0}</div>
+        <div style="font-size:0.78rem;color:#8D8D8D">Admin Deviations</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem">
+      <div><span style="font-size:0.72rem;color:#8D8D8D;text-transform:uppercase;font-weight:700">Total Patients</span><br><strong>${siteData.total || patients.length}</strong></div>
+      <div><span style="font-size:0.72rem;color:#8D8D8D;text-transform:uppercase;font-weight:700">Active Patients</span><br><strong>${siteData.activePatients || 0}</strong></div>
+      <div><span style="font-size:0.72rem;color:#8D8D8D;text-transform:uppercase;font-weight:700">Average Risk Score</span><br>
+        <strong style="color:${riskColor};font-size:1.2rem">${siteData.avgRisk || 0}</strong>
+        &nbsp;${window.AI.riskBadge(Utils.riskCategory(siteData.avgRisk || 0))}
+      </div>
+    </div>
+    ${(siteData.avgRisk || 0) >= 61 ? `
+      <div class="alert alert-danger" style="margin-top:1rem">
+        🚨 <strong>Urgent Site Action Required.</strong> This site's average patient risk score exceeds the High threshold.
+        Immediate on-site CRA visit and sponsor notification recommended within 48 hours.
+      </div>` : `
+      <div class="alert alert-warning" style="margin-top:1rem">
+        ⚠️ <strong>Routine Monitoring Recommended.</strong> Review all open deviations and ensure CAPA completion within 30 days.
+      </div>`}`;
+
+  // Top patients table
+  const analyzed = patients
+    .map(p => ({ p, r: window.AI.analyzePatient(p) }))
+    .sort((a,b) => b.r.riskScore - a.r.riskScore)
+    .slice(0, 5);
+
+  document.getElementById("siteCapaPatients").innerHTML = analyzed.map(({p,r}, i) => {
+    const topDev = r.deviations[0];
+    return `<tr>
+      <td>${i+1}</td>
+      <td><code style="color:#0F62FE;font-size:0.82rem">${p.id}</code></td>
+      <td>${p.name}</td>
+      <td><span style="font-weight:700;color:${Utils.riskColor(r.riskScore)}">${r.riskScore}</span></td>
+      <td style="font-weight:700;color:${r.majorCount>0?'#DA1E28':'#393939'}">${r.majorCount}</td>
+      <td style="font-weight:700;color:${r.minorCount>0?'#B45309':'#393939'}">${r.minorCount}</td>
+      <td>${r.adminCount}</td>
+      <td style="font-size:0.82rem">${topDev ? `${window.AI.severityBadge(topDev.severity)} ${topDev.type}` : '✅ Compliant'}</td>
+    </tr>`;
+  }).join("");
+
+  // Site-level CAPA actions (aggregated by deviation type across all patients)
+  const devTypeCounts = {};
+  analyzed.forEach(({r}) => r.deviations.forEach(d => {
+    if (!devTypeCounts[d.type]) devTypeCounts[d.type] = { ...d, count: 0, maxSeverity: d.severity };
+    devTypeCounts[d.type].count++;
+    if (d.severity === "Major") devTypeCounts[d.type].maxSeverity = "Major";
+    else if (d.severity === "Minor" && devTypeCounts[d.type].maxSeverity === "Administrative")
+      devTypeCounts[d.type].maxSeverity = "Minor";
+  }));
+
+  const aggDeviations = Object.values(devTypeCounts).sort((a,b) => b.count - a.count);
+  const actionsEl = document.getElementById("siteCapaActions");
+  if (!aggDeviations.length) {
+    actionsEl.innerHTML = '<div class="alert alert-success">✅ No significant CAPA actions required at this site.</div>';
+  } else {
+    actionsEl.innerHTML = aggDeviations.map((d, i) => `
+      <div style="margin-bottom:1.25rem;padding:1.25rem;background:#F4F4F4;border-radius:8px;border-left:4px solid ${d.maxSeverity==='Major'?'#DA1E28':d.maxSeverity==='Minor'?'#F1C21B':'#0F62FE'}">
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem">
+          <strong>Action ${i+1}:</strong>
+          ${window.AI.severityBadge(d.maxSeverity)}
+          <strong>${d.type}</strong>
+          <span style="font-size:0.78rem;color:#8D8D8D;margin-left:auto">Affects ${d.count} of ${patients.length} patients</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;font-size:0.88rem">
+          <div><span style="font-size:0.72rem;font-weight:700;color:#8D8D8D;text-transform:uppercase">Root Cause</span><br>${d.rootCause}</div>
+          <div><span style="font-size:0.72rem;font-weight:700;color:#8D8D8D;text-transform:uppercase">Corrective Action</span><br>${d.corrective}</div>
+          <div><span style="font-size:0.72rem;font-weight:700;color:#8D8D8D;text-transform:uppercase">Preventive Action</span><br>${d.preventive}</div>
+          <div><span style="font-size:0.72rem;font-weight:700;color:#8D8D8D;text-transform:uppercase">Responsible</span><br>${d.responsible} &nbsp;|&nbsp; Follow-up: <strong>${d.followUp}</strong></div>
+        </div>
+      </div>`).join("");
+  }
+
+  document.getElementById("siteCapaReport").scrollIntoView({ behavior: "smooth" });
+}
+
 function printReport() {
-  const rep = document.getElementById("capaReport");
-  if (rep.style.display === "none") {
+  const patRep  = document.getElementById("capaReport");
+  const siteRep = document.getElementById("siteCapaReport");
+  if (patRep.style.display === "none" && siteRep.style.display === "none") {
     Utils.showToast("Please generate a CAPA report first.", "warning");
     return;
   }

@@ -22,7 +22,9 @@
       <li><a href="about.html">About</a></li>
       <li><a href="dashboard.html" class="active">Dashboard</a></li>
       <li><a href="patient-checker.html">Patient Checker</a></li>
+      <li><a href="risk-analysis.html">Risk Analysis</a></li>
       <li><a href="site-dashboard.html">Site Risk</a></li>
+      <li><a href="capa-report.html">CAPA</a></li>
       <li><a href="documentation.html">Docs</a></li>
       <li><a href="patient-checker.html" class="nav-cta">Analyze Patient →</a></li>
     </ul>
@@ -95,7 +97,20 @@
           <button class="chip" data-filter="none">Compliant</button>
         </div>
         <button class="btn btn-blue btn-sm" onclick="refreshDashboard()">↻ Refresh</button>
+        <button class="btn btn-outline btn-sm" onclick="exportCSV()">⬇ Export CSV</button>
       </div>
+    </div>
+
+    <!-- Executive Summary Alert Banner -->
+    <div id="execBanner" style="display:none;margin-bottom:1.5rem;padding:1rem 1.25rem;border-radius:10px;border-left:5px solid;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.75rem">
+      <div style="display:flex;align-items:center;gap:0.75rem">
+        <span id="execBannerIcon" style="font-size:1.5rem"></span>
+        <div>
+          <div style="font-weight:700;font-size:1rem" id="execBannerTitle"></div>
+          <div style="font-size:0.82rem;opacity:0.85" id="execBannerMsg"></div>
+        </div>
+      </div>
+      <a href="capa-report.html" class="btn btn-sm" id="execBannerBtn" style="flex-shrink:0">View CAPA Reports →</a>
     </div>
 
     <!-- KPI Cards -->
@@ -154,6 +169,20 @@
           <div class="kpi-label">High Risk Sites</div>
           <div class="kpi-value" id="kpiHighRisk">—</div>
           <div class="kpi-delta down">Needs urgent review</div>
+        </div>
+      </div>
+      <!-- AUDIT READINESS SCORE — the key executive metric -->
+      <div class="kpi-card" style="border:2px solid" id="auditCard">
+        <div class="kpi-icon" id="auditIcon">🎯</div>
+        <div class="kpi-body">
+          <div class="kpi-label">Audit Readiness Score</div>
+          <div class="kpi-value" id="kpiAudit" style="font-size:2.2rem">—</div>
+          <div class="kpi-delta" id="kpiAuditSub">/ 100 · ICH E6 GCP</div>
+          <div style="margin-top:0.5rem">
+            <div class="progress-bar-wrap">
+              <div class="progress-bar" id="auditProgressBar" style="width:0%"></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -262,7 +291,8 @@ function buildResults() {
 }
 
 function renderKPIs() {
-  const kpis = window.AI.computeKPIs(window.APP_DATA.patients);
+  const pts  = window.APP_DATA.patients;
+  const kpis = window.AI.computeKPIs(pts);
   document.getElementById("kpiTotal").textContent    = kpis.totalPatients;
   document.getElementById("kpiActive").textContent   = kpis.activePatients;
   document.getElementById("kpiMissed").textContent   = kpis.missedVisits;
@@ -271,6 +301,63 @@ function renderKPIs() {
   document.getElementById("kpiAdmin").textContent    = kpis.adminDeviations;
   document.getElementById("kpiHighRisk").textContent = kpis.highRiskSites;
   document.getElementById("sidebarBadge").textContent = kpis.majorDeviations;
+
+  // Audit Readiness Score
+  const auditScore = window.AI.computeAuditReadiness(pts);
+  document.getElementById("kpiAudit").textContent = auditScore;
+
+  // Color-code the audit card
+  const auditCard     = document.getElementById("auditCard");
+  const auditIcon     = document.getElementById("auditIcon");
+  const auditBar      = document.getElementById("auditProgressBar");
+  const auditSub      = document.getElementById("kpiAuditSub");
+  let auditColor, auditLabel, auditEmoji, barClass;
+  if (auditScore >= 80)      { auditColor = "#24A148"; auditLabel = "FDA-Ready"; auditEmoji = "🟢"; barClass = "low"; }
+  else if (auditScore >= 60) { auditColor = "#F1C21B"; auditLabel = "Monitor Closely"; auditEmoji = "🟡"; barClass = "medium"; }
+  else if (auditScore >= 40) { auditColor = "#FF832B"; auditLabel = "Remediation Needed"; auditEmoji = "🟠"; barClass = "high"; }
+  else                       { auditColor = "#DA1E28"; auditLabel = "CRITICAL – Act Now"; auditEmoji = "🔴"; barClass = "critical"; }
+
+  auditCard.style.borderColor  = auditColor;
+  auditCard.style.background   = auditScore < 60 ? (auditScore < 40 ? "#FFF1F1" : "#FFF8EE") : "white";
+  auditIcon.textContent        = auditEmoji;
+  auditIcon.style.background   = auditColor + "22";
+  auditIcon.style.color        = auditColor;
+  auditSub.textContent         = `/ 100 — ${auditLabel}`;
+  auditSub.style.color         = auditColor;
+  auditBar.className           = `progress-bar ${barClass}`;
+  auditBar.style.width         = auditScore + "%";
+
+  // Executive Banner
+  const banner = document.getElementById("execBanner");
+  if (auditScore < 60 || kpis.majorDeviations > 10) {
+    const isCritical = auditScore < 40 || kpis.majorDeviations > 20;
+    banner.style.display      = "flex";
+    banner.style.background   = isCritical ? "#FFF1F1" : "#FFF8EE";
+    banner.style.borderColor  = isCritical ? "#DA1E28" : "#FF832B";
+    document.getElementById("execBannerIcon").textContent  = isCritical ? "🚨" : "⚠️";
+    document.getElementById("execBannerTitle").textContent = isCritical
+      ? `Critical Alert: ${kpis.majorDeviations} major deviations detected — FDA audit risk is HIGH`
+      : `Warning: Audit readiness at ${auditScore}% — ${kpis.highRiskSites} sites need immediate review`;
+    document.getElementById("execBannerMsg").textContent = isCritical
+      ? "Immediate corrective action required. Generate CAPA reports for all high-risk sites now."
+      : "Schedule CRA site visits for flagged sites within 5 business days. Review CAPA reports.";
+    document.getElementById("execBannerBtn").style.background = isCritical ? "#DA1E28" : "#FF832B";
+    document.getElementById("execBannerBtn").style.color      = "white";
+  } else {
+    banner.style.display = "none";
+  }
+}
+
+function exportCSV() {
+  const csv = window.AI.exportPatientCSV(window.APP_DATA.patients);
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement("a");
+  a.href     = url;
+  a.download = `clinical-trial-patients-${new Date().toISOString().split("T")[0]}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  Utils.showToast("Patient data exported to CSV!", "success");
 }
 
 function renderCharts() {

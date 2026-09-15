@@ -22,7 +22,9 @@
       <li><a href="about.html">About</a></li>
       <li><a href="dashboard.html">Dashboard</a></li>
       <li><a href="patient-checker.html">Patient Checker</a></li>
+      <li><a href="risk-analysis.html">Risk Analysis</a></li>
       <li><a href="site-dashboard.html" class="active">Site Risk</a></li>
+      <li><a href="capa-report.html">CAPA</a></li>
       <li><a href="documentation.html">Docs</a></li>
       <li><a href="patient-checker.html" class="nav-cta">Analyze Patient →</a></li>
     </ul>
@@ -83,8 +85,15 @@
       </div>
     </div>
 
+    <!-- VIEW TOGGLE TABS -->
+    <div style="display:flex;gap:0.5rem;margin-bottom:1.5rem">
+      <button class="chip active" id="tabCards" onclick="setView('cards')">🃏 Site Cards</button>
+      <button class="chip" id="tabHeatmap" onclick="setView('heatmap')">🔥 Risk Heatmap</button>
+      <button class="chip" id="tabChart" onclick="setView('chart')">📊 Bar Chart</button>
+    </div>
+
     <!-- Bar chart -->
-    <div class="chart-card" style="margin-bottom:2rem">
+    <div class="chart-card" id="viewChart" style="margin-bottom:2rem;display:none">
       <div class="chart-card-header">
         <span class="chart-card-title">📊 Average Risk Score by Site (sorted highest first)</span>
         <span style="font-size:0.82rem;color:#8D8D8D">Lower is better</span>
@@ -92,8 +101,41 @@
       <canvas id="siteBarChart"></canvas>
     </div>
 
+    <!-- ═══════════════ RISK HEATMAP MATRIX ═══════════════ -->
+    <div id="viewHeatmap" style="display:none;margin-bottom:2rem">
+      <div class="card" style="padding:0;overflow:hidden">
+        <div style="padding:1.25rem 1.5rem;border-bottom:1px solid #E0E0E0;background:white">
+          <h3 style="font-size:1rem;font-weight:700;margin-bottom:0.3rem">🔥 Site × Deviation Category Risk Heatmap</h3>
+          <p style="font-size:0.82rem;color:#8D8D8D">Each cell shows deviation count per site. Red = high frequency, green = compliant.</p>
+          <div style="display:flex;gap:1.5rem;margin-top:0.75rem;flex-wrap:wrap;font-size:0.78rem">
+            <span style="display:flex;align-items:center;gap:0.4rem"><span style="width:14px;height:14px;background:#DEFBE6;border-radius:3px;display:inline-block"></span>0 (Compliant)</span>
+            <span style="display:flex;align-items:center;gap:0.4rem"><span style="width:14px;height:14px;background:#FCF4D6;border-radius:3px;display:inline-block"></span>1–2</span>
+            <span style="display:flex;align-items:center;gap:0.4rem"><span style="width:14px;height:14px;background:#FFD9A0;border-radius:3px;display:inline-block"></span>3–5</span>
+            <span style="display:flex;align-items:center;gap:0.4rem"><span style="width:14px;height:14px;background:#FFB3B8;border-radius:3px;display:inline-block"></span>6–9</span>
+            <span style="display:flex;align-items:center;gap:0.4rem"><span style="width:14px;height:14px;background:#FA4D56;border-radius:3px;display:inline-block;opacity:0.85"></span>10+</span>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table id="heatmapTable" style="min-width:700px">
+            <thead>
+              <tr>
+                <th style="min-width:180px">Site</th>
+                <th style="text-align:center">🗓 Visit Timing</th>
+                <th style="text-align:center">💊 Wrong Dose</th>
+                <th style="text-align:center">⛔ Co-medication</th>
+                <th style="text-align:center">🧪 Lab Missing</th>
+                <th style="text-align:center">📄 Doc Missing</th>
+                <th style="text-align:center">Overall Risk</th>
+              </tr>
+            </thead>
+            <tbody id="heatmapBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
     <!-- Site Cards Grid -->
-    <div id="siteCardsGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.25rem;margin-bottom:2rem">
+    <div id="viewCards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.25rem;margin-bottom:2rem">
       <!-- Rendered by JS -->
     </div>
 
@@ -183,9 +225,71 @@
 <script>
 
 let allSites = [];
+let heatmapData = [];
+
+function setView(v) {
+  document.getElementById("viewCards").style.display   = v === "cards"   ? "grid"  : "none";
+  document.getElementById("viewHeatmap").style.display = v === "heatmap" ? "block" : "none";
+  document.getElementById("viewChart").style.display   = v === "chart"   ? "block" : "none";
+
+  ["tabCards","tabHeatmap","tabChart"].forEach(id => document.getElementById(id).classList.remove("active"));
+  document.getElementById("tab" + v.charAt(0).toUpperCase() + v.slice(1)).classList.add("active");
+
+  if (v === "chart") {
+    setTimeout(() => window.Charts.drawBarChart("siteBarChart", allSites), 50);
+  }
+  if (v === "heatmap") renderHeatmap();
+}
+
+function heatmapCellColor(count) {
+  if (count === 0) return "#DEFBE6";
+  if (count <= 2)  return "#FCF4D6";
+  if (count <= 5)  return "#FFD9A0";
+  if (count <= 9)  return "#FFB3B8";
+  return "#FA4D56";
+}
+
+function heatmapTextColor(count) {
+  if (count >= 10) return "white";
+  return "#161616";
+}
+
+function renderHeatmap() {
+  const tbody = document.getElementById("heatmapBody");
+  tbody.innerHTML = heatmapData.map(s => {
+    const cells = [
+      { val: s.visitTiming, label: s.visitRate + "%" },
+      { val: s.dosing,      label: s.doseRate + "%" },
+      { val: s.coMed,       label: s.coMedRate + "%" },
+      { val: s.labMissing,  label: s.labRate + "%" },
+      { val: s.docMissing,  label: s.docRate + "%" }
+    ];
+    const riskColor = Utils.riskColor(s.avgRisk);
+    return `<tr>
+      <td>
+        <strong style="font-size:0.88rem">${s.siteName}</strong>
+        <div style="font-size:0.72rem;color:#8D8D8D">${s.siteId} · ${s.total} patients</div>
+      </td>
+      ${cells.map(c => `
+        <td style="text-align:center;padding:0.6rem">
+          <div style="display:inline-flex;flex-direction:column;align-items:center;background:${heatmapCellColor(c.val)};color:${heatmapTextColor(c.val)};border-radius:6px;padding:0.45rem 0.75rem;min-width:64px">
+            <span style="font-size:1.1rem;font-weight:700">${c.val}</span>
+            <span style="font-size:0.68rem;opacity:0.8">${c.label}</span>
+          </div>
+        </td>`).join("")}
+      <td style="text-align:center">
+        <div style="display:inline-flex;flex-direction:column;align-items:center;border:2px solid ${riskColor};border-radius:6px;padding:0.4rem 0.75rem;min-width:64px">
+          <span style="font-size:1.1rem;font-weight:700;color:${riskColor}">${s.avgRisk}</span>
+          ${window.AI.riskBadge(Utils.riskCategory(s.avgRisk))}
+        </div>
+      </td>
+    </tr>`;
+  }).join("");
+}
 
 document.addEventListener("DOMContentLoaded", () => {
-  allSites = window.AI.computeSiteRisks(window.APP_DATA.patients);
+  allSites     = window.AI.computeSiteRisks(window.APP_DATA.patients);
+  heatmapData  = window.AI.computeHeatmapData(window.APP_DATA.patients);
 
   // KPIs
   const critical = allSites.filter(s => s.status === "Critical").length;
@@ -195,10 +299,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("siteHigh").textContent     = high;
   document.getElementById("siteLow").textContent      = low;
 
-  // Bar Chart
-  window.Charts.drawBarChart("siteBarChart", allSites);
-
-  // Cards
+  // Default view: cards
   renderSiteCards(allSites);
   renderSiteTable(allSites);
 
@@ -212,7 +313,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function renderSiteCards(sites) {
-  const grid = document.getElementById("siteCardsGrid");
+  const grid = document.getElementById("viewCards");
   grid.innerHTML = sites.map(s => {
     const statusColors = { Critical:"#DA1E28", High:"#FF832B", Medium:"#B45309", Low:"#24A148" };
     const color = statusColors[s.status] || "#24A148";

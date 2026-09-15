@@ -263,6 +263,85 @@ function computeSeverityDist(patients) {
 }
 
 // ────────────────────────────────────────────────────────────
+// Audit Readiness Score (0–100, higher = more ready)
+// ────────────────────────────────────────────────────────────
+function computeAuditReadiness(patients) {
+  const total = patients.length;
+  if (total === 0) return 100;
+
+  let penaltyTotal = 0;
+  patients.forEach(p => {
+    const r = analyzePatient(p);
+    // Major = -4 pts, Minor = -1.5 pts, Admin = -0.5 pts per patient (out of normalised 100)
+    penaltyTotal += r.majorCount * 4 + r.minorCount * 1.5 + r.adminCount * 0.5;
+  });
+
+  // Max possible penalty per patient: ~4 deviations × 4 = 16 pts → scale to 100
+  const maxPenalty = total * 16;
+  const score = Math.max(0, Math.round(100 - (penaltyTotal / maxPenalty) * 100));
+  return score;
+}
+
+// ────────────────────────────────────────────────────────────
+// Risk Heatmap Matrix data: sites × deviation categories
+// Returns array of { siteId, siteName, visitTiming, dosing, coMed, labMissing, docMissing, avgRisk }
+// ────────────────────────────────────────────────────────────
+function computeHeatmapData(patients) {
+  const siteMap = {};
+
+  patients.forEach(p => {
+    if (!siteMap[p.siteId]) {
+      siteMap[p.siteId] = {
+        siteId: p.siteId, siteName: p.siteName,
+        visitTiming: 0, dosing: 0, coMed: 0, labMissing: 0, docMissing: 0,
+        total: 0, riskSum: 0
+      };
+    }
+    const r = analyzePatient(p);
+    const s = siteMap[p.siteId];
+    s.total++;
+    s.riskSum += r.riskScore;
+
+    r.deviations.forEach(d => {
+      if (d.type.includes("Visit"))          s.visitTiming++;
+      if (d.type.includes("Dose"))           s.dosing++;
+      if (d.type.includes("Co-medication"))  s.coMed++;
+      if (d.type.includes("Laboratory"))     s.labMissing++;
+      if (d.type.includes("Documentation"))  s.docMissing++;
+    });
+  });
+
+  return Object.values(siteMap).map(s => ({
+    ...s,
+    avgRisk: Math.round(s.riskSum / s.total),
+    // deviation rates per 100 patients for each category
+    visitRate:   Math.round((s.visitTiming / s.total) * 100),
+    doseRate:    Math.round((s.dosing / s.total) * 100),
+    coMedRate:   Math.round((s.coMed / s.total) * 100),
+    labRate:     Math.round((s.labMissing / s.total) * 100),
+    docRate:     Math.round((s.docMissing / s.total) * 100)
+  })).sort((a, b) => b.avgRisk - a.avgRisk);
+}
+
+// ────────────────────────────────────────────────────────────
+// Export all patients to CSV string
+// ────────────────────────────────────────────────────────────
+function exportPatientCSV(patients) {
+  const headers = ["Patient ID","Name","Site","Visit Date","Sched. Date","Dose Given","Expected Dose",
+                   "Co-medication","Lab Done","Doc Complete","Status","Risk Score","Risk Category",
+                   "Major Dev.","Minor Dev.","Admin Dev.","Deviations"];
+  const rows = patients.map(p => {
+    const r = analyzePatient(p);
+    const devSummary = r.deviations.map(d => `${d.type}(${d.severity})`).join("; ");
+    return [p.id, p.name, p.siteName, p.visitDate, p.scheduledDate,
+            p.doseGiven, p.expectedDose, p.comed, p.labCompleted, p.docComplete,
+            p.status, r.riskScore, r.riskCategory, r.majorCount, r.minorCount, r.adminCount,
+            `"${devSummary}"`].join(",");
+  });
+  return [headers.join(","), ...rows].join("\n");
+}
+
+// ────────────────────────────────────────────────────────────
 // Helper: Add days from today → date string
 // ────────────────────────────────────────────────────────────
 function addDaysFromToday(days) {
@@ -301,6 +380,9 @@ window.AI = {
   computeKPIs,
   computeTrend,
   computeSeverityDist,
+  computeAuditReadiness,
+  computeHeatmapData,
+  exportPatientCSV,
   severityBadge,
   riskBadge
 };
